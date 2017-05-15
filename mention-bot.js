@@ -317,7 +317,9 @@ function getBlame(url){
                         }else{
                             author =  author.substring(1, author.length)
                         }
-                        authors.push(author); 
+                        if(username !== author){
+                            authors.push(author);
+                        }
                     }
                 });
 
