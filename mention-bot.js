@@ -306,11 +306,11 @@ function getBlame(url , creator){
                page.open(url);
           },
           function() {
-
-            page.evaluate(function () {
+            console.log('avant function => ', creator_tmp);
+            page.evaluate(function (creator_tmp) {
                 var authors = [];
-                console.log("creator_tmp " , creator_tmp);
-                $('.commit-author-link').each(function (creator_tmp) {
+                console.log("In function : " , creator_tmp);
+                $('.commit-author-link').each(function () {
                     var author = $(this).attr('href');
                     if(authors.indexOf(author) == -1){
                         if (author.indexOf("mailto") >= 0){
@@ -320,7 +320,7 @@ function getBlame(url , creator){
                         }else{
                             author =  author.substring(1, author.length);
                         }
-                        console.log("creator 3 : " , creator_tmp);
+
                         if(creator_tmp != author){
                             authors.push(author);
                         }
@@ -328,9 +328,7 @@ function getBlame(url , creator){
                 });
 
                 return authors;
-              }, function (err,result) {
-                resolve(result);
-              });
+              }, creator_tmp);
           }
         ];
         
