@@ -440,13 +440,11 @@ function guessOwnersForPullRequest(
 
       files.forEach(function(file) {
         promises.push(new Promise(function(resolve, reject) {
-            console.log(repoURL + '/blame/' + sha1 + '/' + file.old_path);
             getBlame((repoURL + '/blame/' + sha1 + '/' + file.old_path))
             .then(function(athrs){
                 var athrs_filtered = athrs.filter(function(element){
                     return element !== username ;
                 });
-                console.log("athrs_filtered " , athrs_filtered);
               authors = authors.concat(athrs_filtered);
               resolve();
             });   
