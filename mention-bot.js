@@ -246,11 +246,9 @@ function fetch(url: string): string {
   return fs.readFileSync(cache_key, 'utf8');
 }
 
-function getBlame(url , creator){
+function getBlame(url){
     var username = process.env.GITLAB_USER;
     var password = process.env.GITLAB_PASSWORD;
-     var creator_tmp  =  creator;
-    console.log("creator 1 : " , creator_tmp);
     return new Promise(function(resolve, reject){
        driver.create({ parameters: { 'ignore-ssl-errors': 'yes' } }, function(err, browser) {
         if(err){
@@ -306,10 +304,8 @@ function getBlame(url , creator){
                page.open(url);
           },
           function() {
-            console.log('avant function => ', creator_tmp);
-            page.evaluate(function (creator_tmp) {
+            page.evaluate(function () {
                 var authors = [];
-                console.log("In function : " , creator_tmp);
                 $('.commit-author-link').each(function () {
                     var author = $(this).attr('href');
                     if(authors.indexOf(author) == -1){
@@ -320,15 +316,14 @@ function getBlame(url , creator){
                         }else{
                             author =  author.substring(1, author.length);
                         }
-
-                        if(creator_tmp != author){
                             authors.push(author);
-                        }
                     }
                 });
 
                 return authors;
-              }, creator_tmp);
+              }, function (err,result) {
+                resolve(result);
+            });
           }
         ];
         
@@ -446,8 +441,9 @@ function guessOwnersForPullRequest(
       files.forEach(function(file) {
         promises.push(new Promise(function(resolve, reject) {
             console.log(repoURL + '/blame/' + sha1 + '/' + file.old_path);
-            getBlame((repoURL + '/blame/' + sha1 + '/' + file.old_path) , username)
+            getBlame((repoURL + '/blame/' + sha1 + '/' + file.old_path))
             .then(function(athrs){
+                console.log("athrs " , athrs);
               authors = authors.concat(athrs);
               resolve();
             });   
