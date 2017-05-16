@@ -310,7 +310,7 @@ function getBlame(url , creator){
             page.evaluate(function (creator_tmp) {
                 var authors = [];
 
-                $('.commit-author-link').each(function () {
+                $('.commit-author-link').each(function (creator_tmp) {
                     var author = $(this).attr('href');
                     if(authors.indexOf(author) == -1){
                         if (author.indexOf("mailto") >= 0){
