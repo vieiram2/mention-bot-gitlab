@@ -250,6 +250,7 @@ function getBlame(url , creator){
     var username = process.env.GITLAB_USER;
     var password = process.env.GITLAB_PASSWORD;
     var creator_tmp = creator ;
+    console.log("creator : " + creator );
     return new Promise(function(resolve, reject){
        driver.create({ parameters: { 'ignore-ssl-errors': 'yes' } }, function(err, browser) {
         if(err){
