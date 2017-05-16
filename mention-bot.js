@@ -307,9 +307,9 @@ function getBlame(url , creator){
           },
           function() {
 
-            page.evaluate(function (creator_tmp) {
+            page.evaluate(function () {
                 var authors = [];
-
+                console.log("creator_tmp " , creator_tmp);
                 $('.commit-author-link').each(function (creator_tmp) {
                     var author = $(this).attr('href');
                     if(authors.indexOf(author) == -1){
@@ -328,7 +328,7 @@ function getBlame(url , creator){
                 });
 
                 return authors;
-              },creator_tmp, function (err,result) {
+              }, function (err,result) {
                 resolve(result);
               });
           }
