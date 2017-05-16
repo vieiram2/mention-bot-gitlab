@@ -306,11 +306,11 @@ function getBlame(url , creator){
                page.open(url);
           },
           function() {
-              window.creator =  creator_tmp;
-            page.evaluate(function () {
+
+            page.evaluate(function (creator_tmp) {
                 var authors = [];
 
-                $('.commit-author-link').each(function () {
+                $('.commit-author-link').each(function (creator_tmp) {
                     var author = $(this).attr('href');
                     if(authors.indexOf(author) == -1){
                         if (author.indexOf("mailto") >= 0){
@@ -320,15 +320,15 @@ function getBlame(url , creator){
                         }else{
                             author =  author.substring(1, author.length);
                         }
-                        console.log("creator 3 : " , window.creator);
-                        if(window.creator != author){
+                        console.log("creator 3 : " , creator_tmp);
+                        if(creator_tmp != author){
                             authors.push(author);
                         }
                     }
                 });
 
                 return authors;
-              }, function (err,result) {
+              },creator_tmp, function (err,result) {
                 resolve(result);
               });
           }
