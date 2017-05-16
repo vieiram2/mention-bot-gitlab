@@ -306,7 +306,8 @@ function getBlame(url , creator){
                page.open(url);
           },
           function() {
-            page.evaluate(function () {
+              console.log("creator 2 : " , creator_tmp);
+            page.evaluate(function (creator) {
                 var authors = [];
 
                 $('.commit-author-link').each(function () {
@@ -319,8 +320,8 @@ function getBlame(url , creator){
                         }else{
                             author =  author.substring(1, author.length);
                         }
-                        console.log("creator 2 : " , creator_tmp);
-                        if(creator_tmp != author){
+                        console.log("creator 3 : " , creator);
+                        if(creator != author){
                             authors.push(author);
                         }
                     }
