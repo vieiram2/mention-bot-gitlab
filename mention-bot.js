@@ -320,8 +320,8 @@ function getBlame(url , creator){
                         }else{
                             author =  author.substring(1, author.length);
                         }
-                        console.log("creator 3 : " , creator_tmp);
-                        if(creator_tmp != author){
+                        console.log("creator 3 : " , creator);
+                        if(creator != author){
                             authors.push(author);
                         }
                     }
