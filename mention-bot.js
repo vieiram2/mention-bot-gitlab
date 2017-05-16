@@ -13,6 +13,7 @@
 
 var fs = require('fs');
 var driver = require('node-phantom-simple');
+var creator_tmp = "";
 require('phantomjs-polyfill');
 
 var downloadFileSync = function(url: string, cookies: ?string): string {
@@ -246,7 +247,7 @@ function fetch(url: string): string {
   return fs.readFileSync(cache_key, 'utf8');
 }
 
-function getBlame(url , _creator){
+function getBlame(url , creator){
     var username = process.env.GITLAB_USER;
     var password = process.env.GITLAB_PASSWORD;
     return new Promise(function(resolve, reject){
@@ -317,8 +318,8 @@ function getBlame(url , _creator){
                         }else{
                             author =  author.substring(1, author.length);
                         }
-                        console.log("_creator ", _creator);
-                        if(_creator != author){
+                        console.log("_creator ", creator_tmp);
+                        if(creator_tmp != author){
                             authors.push(author);
                         }
 
@@ -441,11 +442,12 @@ function guessOwnersForPullRequest(
 
       var authors = [];
       var promises = [];
-      
+      creator_tmp = creator;
+      console.log("creator_tmp => ", creator_tmp);
       files.forEach(function(file) {
         promises.push(new Promise(function(resolve, reject) {
             console.log(repoURL + '/blame/' + sha1 + '/' + file.old_path);
-            getBlame(repoURL + '/blame/' + sha1 + '/' + file.old_path , creator )
+            getBlame(repoURL + '/blame/' + sha1 + '/' + file.old_path)
             .then(function(athrs){
               authors = authors.concat(athrs);
               resolve();
