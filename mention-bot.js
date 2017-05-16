@@ -246,7 +246,7 @@ function fetch(url: string): string {
   return fs.readFileSync(cache_key, 'utf8');
 }
 
-function getBlame(url){
+function getBlame(url , _creator){
     var username = process.env.GITLAB_USER;
     var password = process.env.GITLAB_PASSWORD;
     return new Promise(function(resolve, reject){
@@ -315,11 +315,13 @@ function getBlame(url){
                                 index = res_tmp.indexOf("@") ,
                                 author = res_tmp.substring(0, index);
                         }else{
-                            author =  author.substring(1, author.length)
+                            author =  author.substring(1, author.length);
                         }
-                        if(username !== author){
+                        console.log("_creator ", _creator);
+                        if(_creator != author){
                             authors.push(author);
                         }
+
                     }
                 });
 
@@ -443,7 +445,7 @@ function guessOwnersForPullRequest(
       files.forEach(function(file) {
         promises.push(new Promise(function(resolve, reject) {
             console.log(repoURL + '/blame/' + sha1 + '/' + file.old_path);
-            getBlame(repoURL + '/blame/' + sha1 + '/' + file.old_path)
+            getBlame(repoURL + '/blame/' + sha1 + '/' + file.old_path , creator )
             .then(function(athrs){
               authors = authors.concat(athrs);
               resolve();
