@@ -249,7 +249,8 @@ function fetch(url: string): string {
 function getBlame(url , creator){
     var username = process.env.GITLAB_USER;
     var password = process.env.GITLAB_PASSWORD;
-    console.log("creator : " , creator);
+     var creator_tmp  =  creator;
+    console.log("creator 1 : " , creator_tmp);
     return new Promise(function(resolve, reject){
        driver.create({ parameters: { 'ignore-ssl-errors': 'yes' } }, function(err, browser) {
         if(err){
@@ -318,7 +319,8 @@ function getBlame(url , creator){
                         }else{
                             author =  author.substring(1, author.length);
                         }
-                        if(creator != author){
+                        console.log("creator 2 : " , creator_tmp);
+                        if(creator_tmp != author){
                             authors.push(author);
                         }
                     }
