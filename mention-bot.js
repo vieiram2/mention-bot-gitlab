@@ -246,7 +246,7 @@ function fetch(url: string): string {
   return fs.readFileSync(cache_key, 'utf8');
 }
 
-function getBlame(url , _creator){
+function getBlame(url , creator){
     var username = process.env.GITLAB_USER;
     var password = process.env.GITLAB_PASSWORD;
     return new Promise(function(resolve, reject){
@@ -317,8 +317,8 @@ function getBlame(url , _creator){
                         }else{
                             author =  author.substring(1, author.length);
                         }
-                        console.log("_creator ", _creator);
-                        if(_creator != author){
+                        console.log("_creator ", creator);
+                        if(creator != author){
                             authors.push(author);
                         }
 
