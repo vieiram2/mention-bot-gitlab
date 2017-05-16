@@ -443,10 +443,10 @@ function guessOwnersForPullRequest(
             console.log(repoURL + '/blame/' + sha1 + '/' + file.old_path);
             getBlame((repoURL + '/blame/' + sha1 + '/' + file.old_path))
             .then(function(athrs){
-              console.log("athrs " , athrs);
                 var athrs_filtered = athrs.filter(function(element){
                     return element !== username ;
                 });
+                console.log("athrs_filtered " , athrs_filtered);
               authors = authors.concat(athrs_filtered);
               resolve();
             });   
