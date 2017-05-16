@@ -315,9 +315,11 @@ function getBlame(url){
                                 index = res_tmp.indexOf("@") ,
                                 author = res_tmp.substring(0, index);
                         }else{
-                            author =  author.substring(1, author.length)
+                            author =  author.substring(1, author.length);
                         }
-                        if(username !== author){
+                        var _usernamet_tmp = $(".header-user-dropdown-toggle").attr('href');
+                        _usernamet_tmp =  _usernamet_tmp.substring(1, _usernamet_tmp.length);
+                        if(_usernamet_tmp !== author){
                             authors.push(author);
                         }
                     }
