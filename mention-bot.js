@@ -249,7 +249,7 @@ function fetch(url: string): string {
 function getBlame(url , creator){
     var username = process.env.GITLAB_USER;
     var password = process.env.GITLAB_PASSWORD;
-
+    console.log("creator : " , creator);
     return new Promise(function(resolve, reject){
        driver.create({ parameters: { 'ignore-ssl-errors': 'yes' } }, function(err, browser) {
         if(err){
@@ -318,9 +318,9 @@ function getBlame(url , creator){
                         }else{
                             author =  author.substring(1, author.length);
                         }
-
+                        if(creator != author){
                             authors.push(author);
-
+                        }
                     }
                 });
 
@@ -422,6 +422,7 @@ function guessOwnersForPullRequest(
   sha1: string,
   files: Array<string>,
   creator: string,
+  username: string,
   config: Object,//NOTE: This will be null for the moment
   targetBranch: string
 ): Array<string> {
@@ -444,7 +445,7 @@ function guessOwnersForPullRequest(
       files.forEach(function(file) {
         promises.push(new Promise(function(resolve, reject) {
             console.log(repoURL + '/blame/' + sha1 + '/' + file.old_path);
-            getBlame((repoURL + '/blame/' + sha1 + '/' + file.old_path) , creator)
+            getBlame((repoURL + '/blame/' + sha1 + '/' + file.old_path) , username)
             .then(function(athrs){
               authors = authors.concat(athrs);
               resolve();

@@ -85,12 +85,13 @@ app.post('/', function(req, res) {
         
         var merge_data = {};
         try { merge_data = JSON.parse(body.toString()); } catch (e) {}
-        console.log("data : : " , data);
+
         mentionBot.guessOwnersForPullRequest(
             data.object_attributes.source.web_url,//repo url
             data.object_attributes.last_commit.id,//sha1 of last commit
             merge_data.changes,//all files for this merge request
             data.user.name, // 'mention-bot'
+            data.user.username, // 'mention-bot'
             {}
           ).then(function(reviewers){
 
