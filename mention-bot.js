@@ -13,7 +13,6 @@
 
 var fs = require('fs');
 var driver = require('node-phantom-simple');
-var creator_tmp = "";
 require('phantomjs-polyfill');
 
 var downloadFileSync = function(url: string, cookies: ?string): string {
@@ -318,8 +317,8 @@ function getBlame(url , creator){
                         }else{
                             author =  author.substring(1, author.length);
                         }
-                        console.log("_creator ", creator_tmp);
-                        if(creator_tmp != author){
+                        console.log("_creator ", creator);
+                        if(creator != author){
                             authors.push(author);
                         }
 
@@ -442,12 +441,11 @@ function guessOwnersForPullRequest(
 
       var authors = [];
       var promises = [];
-      creator_tmp = creator;
-      console.log("creator_tmp => ", creator_tmp);
+
       files.forEach(function(file) {
         promises.push(new Promise(function(resolve, reject) {
             console.log(repoURL + '/blame/' + sha1 + '/' + file.old_path);
-            getBlame(repoURL + '/blame/' + sha1 + '/' + file.old_path)
+            getBlame((repoURL + '/blame/' + sha1 + '/' + file.old_path) , creator)
             .then(function(athrs){
               authors = authors.concat(athrs);
               resolve();
