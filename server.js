@@ -64,6 +64,7 @@ app.post('/', function(req, res) {
   req.pipe(bl(function(err, body) {
     var data = {};
     try { data = JSON.parse(body.toString()); } catch (e) {}
+    console.log("data ==> ", data);
     if (data.object_attributes.state !== 'opened') {
       console.log(
         'Skipping because action is ' + data.object_attributes.state + '.',
@@ -91,7 +92,7 @@ app.post('/', function(req, res) {
             data.object_attributes.last_commit.id,//sha1 of last commit
             merge_data.changes,//all files for this merge request
             data.user.name, // 'mention-bot'
-            data.user.username, // 'mention-bot'
+            data.user.username, // 'username of creator'
             {}
           ).then(function(reviewers){
 
