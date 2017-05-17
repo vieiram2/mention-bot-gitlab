@@ -88,8 +88,8 @@ app.post('/', function(req, res) {
         try { merge_data = JSON.parse(body.toString()); } catch (e) {}
 
 console.log("data.object_attributes.action ==> " , data.object_attributes.action);
-        
-        if(data.object_attributes.action == 'open'){
+
+        if(data.object_attributes.action != 'update'){
             mentionBot.guessOwnersForPullRequest(
                 data.object_attributes.source.web_url,//repo url
                 data.object_attributes.last_commit.id,//sha1 of last commit
