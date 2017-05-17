@@ -87,40 +87,43 @@ app.post('/', function(req, res) {
         var merge_data = {};
         try { merge_data = JSON.parse(body.toString()); } catch (e) {}
 
-        mentionBot.guessOwnersForPullRequest(
-            data.object_attributes.source.web_url,//repo url
-            data.object_attributes.last_commit.id,//sha1 of last commit
-            merge_data.changes,//all files for this merge request
-            data.user.name, // 'mention-bot'
-            data.user.username, // 'username of creator'
-            {}
-          ).then(function(reviewers){
-
-          if (reviewers.length === 0) {
-            console.log('Skipping because there are no reviewers found.');
-            return;
-          }
-            request.debug = true;
-
-            request.post({
-                url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
-                body: JSON.stringify({
-                    note : messageGenerator(
-                      reviewers,
-                      buildMentionSentence,
-                      defaultMessageGenerator)
-                    }),
-                headers : {
-                    'PRIVATE-TOKEN' : process.env.GITLAB_TOKEN,
-                    'Content-Type' : 'application/json'
-                }
-            },function(commentError, commentResponse, commentBody){
-              if (commentError || commentResponse.statusCode != 200) {
-                    console.log('Error commenting on merge request: ' + commentBody);
-              }
-          }); 
-        });
+console.log("data.object_attributes.action ==> " , data.object_attributes.action);
         
+        if(data.object_attributes.action == 'open'){
+            mentionBot.guessOwnersForPullRequest(
+                data.object_attributes.source.web_url,//repo url
+                data.object_attributes.last_commit.id,//sha1 of last commit
+                merge_data.changes,//all files for this merge request
+                data.user.name, // 'mention-bot'
+                data.user.username, // 'username of creator'
+                {}
+            ).then(function(reviewers){
+
+                if (reviewers.length === 0) {
+                    console.log('Skipping because there are no reviewers found.');
+                    return;
+                }
+                request.debug = true;
+
+                request.post({
+                    url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
+                    body: JSON.stringify({
+                        note : messageGenerator(
+                            reviewers,
+                            buildMentionSentence,
+                            defaultMessageGenerator)
+                    }),
+                    headers : {
+                        'PRIVATE-TOKEN' : process.env.GITLAB_TOKEN,
+                        'Content-Type' : 'application/json'
+                    }
+                },function(commentError, commentResponse, commentBody){
+                    if (commentError || commentResponse.statusCode != 200) {
+                        console.log('Error commenting on merge request: ' + commentBody);
+                    }
+                });
+            });
+        }
         return res.end();        
     });
   }));
