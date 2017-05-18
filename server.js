@@ -96,12 +96,31 @@ console.log("data.object_attributes.action ==> " , data.object_attributes.action
                 merge_data.changes,//all files for this merge request
                 data.user.name, // 'mention-bot'
                 data.user.username, // 'username of creator'
-                data.project.homepage, // 'url to get all members in project'
                 {}
             ).then(function(reviewers){
 
                 if (reviewers.length === 0) {
-                    console.log('Skipping because there are no reviewers found.');
+                    // console.log('Skipping because there are no reviewers found.');
+                    request.debug = true;
+
+                    request.post({
+                        url : process.env.GITLAB_URL + '/api/v4/projects/' + data.object_attributes.target_project_id + '/members',
+                        body: JSON.stringify({
+                            note : messageGenerator(
+                                reviewers,
+                                buildMentionSentence,
+                                defaultMessageGenerator)
+                        }),
+                        headers : {
+                            'PRIVATE-TOKEN' : process.env.GITLAB_TOKEN,
+                            'Content-Type' : 'application/json'
+                        }
+                    },function(commentError, commentResponse, commentBody){
+                        if (commentError || commentResponse.statusCode != 200) {
+                            console.log('Error commenting on merge request: ' + commentBody);
+                        }
+                    });
+
                     return;
                 }
                 request.debug = true;

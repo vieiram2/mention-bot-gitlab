@@ -246,99 +246,6 @@ function fetch(url: string): string {
   return fs.readFileSync(cache_key, 'utf8');
 }
 
-function getAllMembers(url){
-
-    var username = process.env.GITLAB_USER;
-    var password = process.env.GITLAB_PASSWORD;
-    return new Promise(function(resolve, reject){
-        driver.create({ parameters: { 'ignore-ssl-errors': 'yes' } }, function(err, browser) {
-            if(err){
-                throw err;
-            }
-            return browser.createPage(function(err,page) {
-                //track whether the page is in the progress of loading
-                var loadInProgress = false;
-
-                page.onConsoleMessage = function(msg) {
-                    console.log(msg);
-                };
-
-                page.onError = function(msg, trace) {
-                    var msgStack = ['ERROR: ' + msg];
-
-                    if (trace && trace.length) {
-                        msgStack.push('TRACE:');
-                        trace.forEach(function(t) {
-                            msgStack.push(' -> ' + t.file + ': ' + t.line + (t.function ? ' (in function "' + t.function +'")' : ''));
-                        });
-                    }
-
-                    console.error(msgStack.join('\n'));
-                };
-
-                page.onLoadStarted = function() {
-                    loadInProgress = true;
-                };
-
-                page.onLoadFinished = function() {
-                    loadInProgress = false;
-                };
-
-                var Members = [
-                    function() {
-                        page.open(process.env.GITLAB_URL + '/users/signin');
-                    },
-                    function() {
-                        //Enter Credentials by passing them into evaluate
-                        page.evaluate(function(username, password) {
-                                document.getElementById('username').value = username;
-                                document.getElementById('password').value = password;
-                                document.getElementById('new_ldap_user').submit();
-                            },
-                            username,
-                            password,
-                            function(){
-                                //callback not used
-                            });
-                    },
-                    function() {
-                        page.open(url);
-                    },
-                    function() {
-                        page.evaluate(function () {
-                            var Members_tmp = [];
-                            $('.content-list .member').each(function () {
-                                var membre = $(this).find(".list-item-name strong a").attr('href');
-                                if(Members_tmp.indexOf(membre) == -1){
-                                    Members_tmp.push(membre);
-                                }
-                            });
-
-                            return Members_tmp;
-                        }, function (err,result) {
-                            resolve(result);
-                        });
-                    }
-                ];
-
-                var testindex = 0;
-                var interval = setInterval(function() {
-                    if(loadInProgress){
-                        return;
-                    }
-                    if (typeof Members[testindex] == "function") {
-                        console.log("Members " + (testindex + 1) );
-                        Members[testindex]();
-                        testindex++;
-                    } else {
-                        clearInterval(interval);
-                        browser.exit();
-                    }
-                }, 2000);
-            });
-        });
-    });
-}
 function getBlame(url){
     var username = process.env.GITLAB_USER;
     var password = process.env.GITLAB_PASSWORD;
@@ -512,7 +419,6 @@ function guessOwnersForPullRequest(
   files: Array<string>,
   creator: string,
   username: string,
-  urlhp: string,
   config: Object,//NOTE: This will be null for the moment
   targetBranch: string
 ): Array<string> {
@@ -522,7 +428,7 @@ function guessOwnersForPullRequest(
       // all of them to get the best set of reviewers. In practice, we don't
       // want to do hundreds of http requests. Using the top 5 files is enough
       // to get us 3 people that may have context.
-     /* files.sort(function(a, b) {
+      /*files.sort(function(a, b) {
         var countA = a.deletedLines.length;
         var countB = b.deletedLines.length;
         return countA > countB ? -1 : (countA < countB ? 1 : 0);
@@ -549,22 +455,6 @@ function guessOwnersForPullRequest(
 
       // This is the line that implements the actual algorithm, all the lines
       // before are there to fetch and extract the data needed.
-      // if(promises.length == 0){
-      if(promises.length != 0){
-          promises.push(new Promise(function(resolve, reject) {
-              console.log("url Hp ==> " + urlhp + '/settings/members');
-              getAllMembers((urlhp + '/settings/members'))
-                  .then(function(membre){
-                      var athrs_filtered = membre.filter(function(elem){
-                          return elem !== username ;
-                      });
-                      authors = authors.concat(athrs_filtered);
-                      console.log("authors ==> ", authors);
-                      resolve();
-                  });
-          }));
-      }
-
       Promise.all(promises)
       .then(function() {
           resolve(guessOwners(authors));
