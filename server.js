@@ -134,7 +134,10 @@ app.post('/', function(req, res) {
                                     reviewers,
                                     buildMentionSentence,
                                     defaultMessageGenerator)
-                            })
+                            }),
+                            success: function(response) {
+                                console.log("response ", response);
+                            }
                         },function(commentError, commentResponse, commentBody){
                             if (commentError || commentResponse.statusCode != 200) {
                                 console.log('Error commenting on merge request: ' + commentBody);
