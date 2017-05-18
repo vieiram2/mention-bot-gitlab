@@ -96,6 +96,7 @@ console.log("data.object_attributes.action ==> " , data.object_attributes.action
                 merge_data.changes,//all files for this merge request
                 data.user.name, // 'mention-bot'
                 data.user.username, // 'username of creator'
+                data.project.homepage, // 'url to get all members in project'
                 {}
             ).then(function(reviewers){
 
