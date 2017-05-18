@@ -102,7 +102,7 @@ app.post('/', function(req, res) {
 
                     // if (reviewers.length === 0) {
                     if (reviewers.length != 0) {
-                        // console.log('Skipping because there are no reviewers found.... debug 2');
+                        console.log('Skipping because there are no reviewers found.... debug 2');
                         // request.debug = true;
                         // $.ajax({
                         //     type: "GET",
@@ -121,7 +121,7 @@ app.post('/', function(req, res) {
                         //     }
                         // });
 
-                        request.get({
+                        request.post({
                             url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users?private_token='+ process.env.GITLAB_TOKEN,
                             body: JSON.stringify({
                                 note : messageGenerator(
