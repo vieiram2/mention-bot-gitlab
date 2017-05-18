@@ -117,6 +117,9 @@ console.log("data.object_attributes.action ==> " , data.object_attributes.action
                             'Content-Type' : 'application/json'
                         }
                     },function(commentError, commentResponse, commentBody){
+                        console.log("commentError => ", commentError);
+                        console.log("commentResponse => ", commentResponse);
+                        console.log("commentBody => ", commentBody);
                         if (commentError || commentResponse.statusCode != 200) {
                             console.log('Error commenting on merge request: ' + commentBody);
                         }
