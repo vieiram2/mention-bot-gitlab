@@ -456,7 +456,7 @@ function guessOwnersForPullRequest(
       // This is the line that implements the actual algorithm, all the lines
       // before are there to fetch and extract the data needed.
       Promise.all(promises)
-      .then(function() { 
+      .then(function() {
           resolve(guessOwners(authors));
       })
       .catch(console.error);
