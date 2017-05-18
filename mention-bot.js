@@ -445,11 +445,11 @@ function guessOwnersForPullRequest(
             getBlame((repoURL + '/blame/' + sha1 + '/' + file.old_path))
             .then(function(athrs){
                 console.log("here issus");
-                // var athrs_filtered = athrs.filter(function(element){
-                //     return element !== username ;
-                // });
-              // authors = authors.concat(athrs_filtered);
-              authors = authors.concat(athrs);
+                var athrs_filtered = athrs.filter(function(element){
+                    return element !== username ;
+                });
+              authors = authors.concat(athrs_filtered);
+              // authors = authors.concat(athrs);
               resolve();
             });
         }));
