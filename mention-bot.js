@@ -310,6 +310,14 @@ function getAllMembers(url){
                             $('.content-list .member').each(function () {
                                 var membre = $(this).find(".list-item-name strong a").attr('href');
                                 if(Members_tmp.indexOf(membre) == -1){
+                                    if (membre.indexOf("mailto") >= 0){
+                                        var res_tmp = membre.substring(7, membre.length) ,
+                                            index = res_tmp.indexOf("@") ,
+                                            membre = res_tmp.substring(0, index);
+                                    }else{
+                                        membre =  membre.substring(1, membre.length);
+                                    }
+
                                     Members_tmp.push(membre);
                                 }
                             });
