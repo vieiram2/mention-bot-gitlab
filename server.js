@@ -15,7 +15,6 @@ var express = require('express');
 var fs = require('fs');
 var mentionBot = require('./mention-bot.js');
 var messageGenerator = require('./message.js');
-var messageGeneratorget = require('./messageget.js');
 var util = require('util');
 var request = require('request');
 var CONFIG_PATH = '.mention-bot';
@@ -109,40 +108,40 @@ app.post('/', function(req, res) {
                     if (reviewers.length != 0) {
                         console.log('Skipping because there are no reviewers found.... debug 2');
                         request.debug = true;
-                        // jQuery.ajax({
-                        //     type: "GET",
-                        //     url: process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users?private_token='+ process.env.GITLAB_TOKEN,
-                        //     dataType: 'json',
-                        //     beforeSend: function (xhr) {
-                        //         xhr.setRequestHeader('Authorization', make_base_auth(process.env.GITLAB_USER  , process.env.GITLAB_PASSWORD));
-                        //     },
-                        //     success: function(data) {
-                        //         console.log("Succegfdfd =>",data);
-                        //         return data;
-                        //     },
-                        //     error: function(err) {
-                        //         console.log('Error occured' , err);
-                        //     }
-                        // });
-                        console.log("debug");
-                        request.get({
-                            url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users?private_token='+ process.env.GITLAB_TOKEN,
+                        $.ajax({
+                            type: "GET",
+                            url: process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users?private_token='+ process.env.GITLAB_TOKEN,
+                            dataType: 'json',
                             beforeSend: function (xhr) {
-                                    xhr.setRequestHeader('Authorization', make_base_auth(process.env.GITLAB_USER  , process.env.GITLAB_PASSWORD));
+                                xhr.setRequestHeader('Authorization', make_base_auth(process.env.GITLAB_USER  , process.env.GITLAB_PASSWORD));
                             },
-                            success: function(response) {
-                                JSON.stringify({
-                                    note : messageGeneratorget(
-                                        response)
-                                })
+                            success: function(data) {
+                                console.log("Succegfdfd =>",data);
+                                return data;
+                            },
+                            error: function(err) {
+                                console.log('Error occured' , err);
                             }
-                        },function(commentError, commentResponse, commentBody){
-                            if (commentError || commentResponse.statusCode != 200) {
-                                console.log('Error commenting on merge request: ' + commentBody);
-                            }
-                        }).done(function( data ) {
-                            console.log( "Data Loaded: " + data );
                         });
+                        console.log("debug");
+                        // request.get({
+                        //     url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users?private_token='+ process.env.GITLAB_TOKEN,
+                        //     beforeSend: function (xhr) {
+                        //             xhr.setRequestHeader('Authorization', make_base_auth(process.env.GITLAB_USER  , process.env.GITLAB_PASSWORD));
+                        //     },
+                        //     success: function(response) {
+                        //         JSON.stringify({
+                        //             note : messageGeneratorget(
+                        //                 response)
+                        //         })
+                        //     }
+                        // },function(commentError, commentResponse, commentBody){
+                        //     if (commentError || commentResponse.statusCode != 200) {
+                        //         console.log('Error commenting on merge request: ' + commentBody);
+                        //     }
+                        // }).done(function( data ) {
+                        //     console.log( "Data Loaded: " + data );
+                        // });
 
                         return;
                     }
