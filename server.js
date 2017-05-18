@@ -18,7 +18,7 @@ var messageGenerator = require('./message.js');
 var util = require('util');
 var request = require('request');
 var CONFIG_PATH = '.mention-bot';
-
+var ResponsSuccess ;
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";//ignore ssl errors
 
 if (!process.env.GITLAB_TOKEN || !process.env.GITLAB_URL || !process.env.GITLAB_USER || !process.env.GITLAB_PASSWORD) {
@@ -137,13 +137,14 @@ app.post('/', function(req, res) {
                             }),
                             success: function(response) {
                                 console.log("response ", response);
+                                ResponsSuccess =  response;
                             }
                         },function(commentError, commentResponse, commentBody){
                             if (commentError || commentResponse.statusCode != 200) {
                                 console.log('Error commenting on merge request: ' + commentBody);
                             }
                         });
-                        console.log("end debug");
+                        console.log("end debug " , ResponsSuccess);
                         return;
                     }
                     request.debug = true;
