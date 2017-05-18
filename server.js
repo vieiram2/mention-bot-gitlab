@@ -73,6 +73,7 @@ app.post('/', function(req, res) {
             return res.end();
         }
 
+        console.log("process.env.GITLAB_TOKEN ==> ", process.env.GITLAB_TOKEN);
         request({
             url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_request/' + data.object_attributes.id + '/changes',
             headers : {
