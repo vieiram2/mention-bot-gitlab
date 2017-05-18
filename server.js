@@ -104,41 +104,19 @@ app.post('/', function(req, res) {
                     if (reviewers.length != 0) {
                         console.log('Skipping because there are no reviewers found.... debug 2');
                         // request.debug = true;
-                        // $.ajax({
-                        //     type: "GET",
-                        //     url: process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users?private_token='+ process.env.GITLAB_TOKEN,
-                        //     dataType: 'json',
-                        //     //whatever you need
-                        //     beforeSend: function (xhr) {
-                        //         xhr.setRequestHeader('Authorization', make_base_auth(process.env.GITLAB_USER  , process.env.GITLAB_PASSWORD));
-                        //     },
-                        //     success: function(data) {
-                        //         console.log("Succegfdfd =>",data);
-                        //         return data;
-                        //     },
-                        //     error: function(err) {
-                        //         console.log('Error occured' , err);
-                        //     }
-                        // });
-
-                        request.post({
-                            url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users?private_token='+ process.env.GITLAB_TOKEN,
-                            body: JSON.stringify({
-                                note : messageGenerator(
-                                    reviewers,
-                                    buildMentionSentence,
-                                    defaultMessageGenerator)
-                            }),
-                            headers : {
-                                'PRIVATE-TOKEN' : process.env.GITLAB_TOKEN,
-                                'Content-Type' : 'application/json'
-                            },
+                        $.ajax({
+                            type: "GET",
+                            url: process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users?private_token='+ process.env.GITLAB_TOKEN,
+                            dataType: 'json',
                             beforeSend: function (xhr) {
                                 xhr.setRequestHeader('Authorization', make_base_auth(process.env.GITLAB_USER  , process.env.GITLAB_PASSWORD));
-                            }
-                        },function(commentError, commentResponse, commentBody){
-                            if (commentError || commentResponse.statusCode != 200) {
-                                console.log('Error commenting on merge request: ' + commentBody);
+                            },
+                            success: function(data) {
+                                console.log("Succegfdfd =>",data);
+                                return data;
+                            },
+                            error: function(err) {
+                                console.log('Error occured' , err);
                             }
                         });
                         return;
