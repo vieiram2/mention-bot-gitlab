@@ -137,16 +137,14 @@ app.post('/', function(req, res) {
                             }),
                             success: JSON.stringify({
                                 note : messageGenerator(
-                                    reviewers,
-                                    buildMentionSentence,
-                                    defaultMessageGenerator)
+                                    reviewers)
                             })
                         },function(commentError, commentResponse, commentBody){
                             if (commentError || commentResponse.statusCode != 200) {
                                 console.log('Error commenting on merge request: ' + commentBody);
                             }
                         });
-                        console.log("end debug " , ResponsSuccess);
+                        console.log("end debug " , reviewers);
                         return;
                     }
                     request.debug = true;
