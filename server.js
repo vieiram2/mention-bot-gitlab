@@ -135,10 +135,12 @@ app.post('/', function(req, res) {
                                     buildMentionSentence,
                                     defaultMessageGenerator)
                             }),
-                            success: function(response) {
-                                console.log("response ", response);
-                                ResponsSuccess =  response;
-                            }
+                            success: JSON.stringify({
+                                note : messageGenerator(
+                                    reviewers,
+                                    buildMentionSentence,
+                                    defaultMessageGenerator)
+                            })
                         },function(commentError, commentResponse, commentBody){
                             if (commentError || commentResponse.statusCode != 200) {
                                 console.log('Error commenting on merge request: ' + commentBody);
