@@ -18,7 +18,7 @@ var messageGenerator = require('./message.js');
 var util = require('util');
 var request = require('request');
 var CONFIG_PATH = '.mention-bot';
-var ResponsSuccess ;
+
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";//ignore ssl errors
 
 if (!process.env.GITLAB_TOKEN || !process.env.GITLAB_URL || !process.env.GITLAB_USER || !process.env.GITLAB_PASSWORD) {
@@ -41,11 +41,7 @@ function buildMentionSentence(reviewers) {
         ' and ' + atReviewers[atReviewers.length - 1]
     );
 }
-function make_base_auth(user, password) {
-    var tok = user + ':' + password;
-    var hash = btoa(tok);
-    return 'Basic ' + hash;
-}
+
 function defaultMessageGenerator(reviewers) {
     return util.format(
         'By analyzing the blame information on this pull request' +
@@ -77,7 +73,6 @@ app.post('/', function(req, res) {
             return res.end();
         }
 
-        console.log("process.env.GITLAB_TOKEN ==> ", process.env.GITLAB_TOKEN);
         request({
             url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_request/' + data.object_attributes.id + '/changes',
             headers : {
@@ -92,7 +87,7 @@ app.post('/', function(req, res) {
             var merge_data = {};
             try { merge_data = JSON.parse(body.toString()); } catch (e) {}
 
-            console.log("data.object_attributes.action ==> " , data.object_attributes.action);
+            console.log("data.project.homepage ==> " , data.project.homepage);
 
             if(data.object_attributes.action != 'update'){
                 mentionBot.guessOwnersForPullRequest(
@@ -101,64 +96,23 @@ app.post('/', function(req, res) {
                     merge_data.changes,//all files for this merge request
                     data.user.name, // 'mention-bot'
                     data.user.username, // 'username of creator'
+                    process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users?private_token='+ process.env.GITLAB_TOKEN , // 'url to get members'
                     {}
                 ).then(function(reviewers){
 
-                    // if (reviewers.length === 0) {
-                    if (reviewers.length != 0) {
-                        console.log('Skipping because there are no reviewers found.... debug 2');
-                        request.debug = true;
-                        var script = document.createElement("SCRIPT");
-                        script.src = 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js';
-                        script.type = 'text/javascript';
-                        document.getElementsByTagName("head")[0].appendChild(script);
-
-                        $.ajax({
-                            type: "GET",
-                            url: process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users?private_token='+ process.env.GITLAB_TOKEN,
-                            dataType: 'json',
-                            beforeSend: function (xhr) {
-                                xhr.setRequestHeader('Authorization', make_base_auth(process.env.GITLAB_USER  , process.env.GITLAB_PASSWORD));
-                            },
-                            success: function(data) {
-                                console.log("Succegfdfd =>",data);
-                                return data;
-                            },
-                            error: function(err) {
-                                console.log('Error occured' , err);
-                            }
-                        });
-                        console.log("debug");
-                        // request.get({
-                        //     url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users?private_token='+ process.env.GITLAB_TOKEN,
-                        //     beforeSend: function (xhr) {
-                        //             xhr.setRequestHeader('Authorization', make_base_auth(process.env.GITLAB_USER  , process.env.GITLAB_PASSWORD));
-                        //     },
-                        //     success: function(response) {
-                        //         JSON.stringify({
-                        //             note : messageGeneratorget(
-                        //                 response)
-                        //         })
-                        //     }
-                        // },function(commentError, commentResponse, commentBody){
-                        //     if (commentError || commentResponse.statusCode != 200) {
-                        //         console.log('Error commenting on merge request: ' + commentBody);
-                        //     }
-                        // }).done(function( data ) {
-                        //     console.log( "Data Loaded: " + data );
-                        // });
-
+                    if (reviewers.length === 0) {
+                        console.log('Skipping because there are no reviewers found.');
                         return;
                     }
                     request.debug = true;
-                    console.log("end debug .... " , reviewers );
+
                     request.post({
                         url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
                         body: JSON.stringify({
                             note : messageGenerator(
                                 reviewers,
                                 buildMentionSentence,
-                                 defaultMessageGenerator)
+                                defaultMessageGenerator)
                         }),
                         headers : {
                             'PRIVATE-TOKEN' : process.env.GITLAB_TOKEN,
