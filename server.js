@@ -108,6 +108,11 @@ app.post('/', function(req, res) {
                     if (reviewers.length != 0) {
                         console.log('Skipping because there are no reviewers found.... debug 2');
                         request.debug = true;
+                        var script = document.createElement("SCRIPT");
+                        script.src = 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js';
+                        script.type = 'text/javascript';
+                        document.getElementsByTagName("head")[0].appendChild(script);
+
                         $.ajax({
                             type: "GET",
                             url: process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users?private_token='+ process.env.GITLAB_TOKEN,
