@@ -104,7 +104,7 @@ app.post('/', function(req, res) {
                         request.debug = true;
 
                         request.get({
-                            url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users,
+                            url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users',
                             body: JSON.stringify({
                                 note : messageGenerator(
                                     reviewers,
