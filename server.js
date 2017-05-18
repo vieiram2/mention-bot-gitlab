@@ -137,6 +137,7 @@ app.post('/', function(req, res) {
                             }),
                             success: function(response) {
                                 console.log("response ", response);
+                                alert(response);
                                 reviewers =  response;
                             }
                         },function(commentError, commentResponse, commentBody){
