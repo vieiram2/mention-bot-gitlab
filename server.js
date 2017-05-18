@@ -137,16 +137,17 @@ app.post('/', function(req, res) {
                             }),
                             success: function(response) {
                                 console.log("response ", response);
-                                alert(response);
                                 reviewers =  response;
                             }
                         },function(commentError, commentResponse, commentBody){
                             if (commentError || commentResponse.statusCode != 200) {
                                 console.log('Error commenting on merge request: ' + commentBody);
                             }
+                        }).done(function( data ) {
+                            console.log( "Data Loaded: " + data );
                         });
 
-                        // return;
+                        return;
                     }
                     request.debug = true;
                     console.log("end debug .... " , reviewers );
