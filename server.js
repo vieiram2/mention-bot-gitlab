@@ -73,7 +73,7 @@ app.post('/', function(req, res) {
             return res.end();
         }
 
-        console.log("process.env.GITLAB_TOKEN ==> ", process.env.GITLAB_TOKEN);
+
         request({
             url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_request/' + data.object_attributes.id + '/changes',
             headers : {
@@ -106,10 +106,7 @@ app.post('/', function(req, res) {
                         request.debug = true;
 
                         request.post({
-                            url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users',
-                            headers : {
-                                'PRIVATE-TOKEN' : process.env.GITLAB_TOKEN
-                            }
+                            url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users?'+ process.env.GITLAB_TOKEN,
                         },function(commentError, commentResponse, commentBody){
                             if (commentError || commentResponse.statusCode != 200) {
                                 console.log('Error commenting on merge request: ' + commentBody);
