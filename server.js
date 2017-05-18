@@ -15,6 +15,7 @@ var express = require('express');
 var fs = require('fs');
 var mentionBot = require('./mention-bot.js');
 var messageGenerator = require('./message.js');
+var messageGeneratorget = require('./messageget.js');
 var util = require('util');
 var request = require('request');
 var CONFIG_PATH = '.mention-bot';
@@ -129,15 +130,11 @@ app.post('/', function(req, res) {
                             beforeSend: function (xhr) {
                                     xhr.setRequestHeader('Authorization', make_base_auth(process.env.GITLAB_USER  , process.env.GITLAB_PASSWORD));
                             },
-                            body: JSON.stringify({
-                                note : messageGenerator(
-                                    reviewers,
-                                    buildMentionSentence,
-                                    defaultMessageGenerator)
-                            }),
                             success: function(response) {
-                                console.log("response ", response);
-                                reviewers =  response;
+                                JSON.stringify({
+                                    note : messageGeneratorget(
+                                        response)
+                                })
                             }
                         },function(commentError, commentResponse, commentBody){
                             if (commentError || commentResponse.statusCode != 200) {

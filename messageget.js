@@ -12,15 +12,14 @@
 'use strict';
 
 module.exports = function(
-  reviewers: Array<string>,
-  mentionSentenceBuilder: (reviewers: Array<string>) => string,
-  defaultMessageGenerator: (reviewers: Array<string>) => string
+  reviewers: Array<string>
 ): string {
 
   // This file is a place where you can change the way the message the bot
   // uses to comment. For example:
   //
-     return 'Merci de valider cette MR ' + mentionSentenceBuilder(reviewers);
+    console.log("reviewers ===> ", reviewers);
+     return 'Message ' + reviewers;
   //
   // will print
   //
