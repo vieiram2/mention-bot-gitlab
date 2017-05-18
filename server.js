@@ -123,25 +123,24 @@ app.post('/', function(req, res) {
                         //         console.log('Error occured' , err);
                         //     }
                         // });
-
-                        request.post({
+                        console.log("debug");
+                        request.get({
                             url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users?private_token='+ process.env.GITLAB_TOKEN,
+                            beforeSend: function (xhr) {
+                                    xhr.setRequestHeader('Authorization', make_base_auth(process.env.GITLAB_USER  , process.env.GITLAB_PASSWORD));
+                            },
                             body: JSON.stringify({
                                 note : messageGenerator(
                                     reviewers,
                                     buildMentionSentence,
                                     defaultMessageGenerator)
-                            }),
-                            headers : {
-                                'PRIVATE-TOKEN' : process.env.GITLAB_TOKEN,
-                                'Content-Type' : 'application/json'
-                            }
+                            })
                         },function(commentError, commentResponse, commentBody){
                             if (commentError || commentResponse.statusCode != 200) {
                                 console.log('Error commenting on merge request: ' + commentBody);
                             }
                         });
-
+                        console.log("end debug");
                         return;
                     }
                     request.debug = true;
