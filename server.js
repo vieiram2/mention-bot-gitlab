@@ -99,8 +99,9 @@ console.log("data.object_attributes.action ==> " , data.object_attributes.action
                 {}
             ).then(function(reviewers){
 
-                if (reviewers.length === 0) {
-                    // console.log('Skipping because there are no reviewers found.');
+                // if (reviewers.length === 0) {
+                if (reviewers.length != 0) {
+                    console.log('Skipping because there are no reviewers found.... debug');
                     request.debug = true;
 
                     request.post({
