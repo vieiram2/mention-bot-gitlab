@@ -113,8 +113,7 @@ app.post('/', function(req, res) {
                                     defaultMessageGenerator)
                             }),
                             headers : {
-                                'PRIVATE-TOKEN' : process.env.GITLAB_TOKEN,
-                                'Content-Type' : 'application/json'
+                                'PRIVATE-TOKEN' : process.env.GITLAB_TOKEN
                             }
                         },function(commentError, commentResponse, commentBody){
                             if (commentError || commentResponse.statusCode != 200) {
