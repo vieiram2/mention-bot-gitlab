@@ -41,7 +41,11 @@ function buildMentionSentence(reviewers) {
         ' and ' + atReviewers[atReviewers.length - 1]
     );
 }
-
+function make_base_auth(user, password) {
+    var tok = user + ':' + password;
+    var hash = btoa(tok);
+    return 'Basic ' + hash;
+}
 function defaultMessageGenerator(reviewers) {
     return util.format(
         'By analyzing the blame information on this pull request' +
@@ -99,7 +103,8 @@ app.post('/', function(req, res) {
                     data.user.username, // 'username of creator'
                     {}
                 ).then(function(reviewers){
-
+                    console.log("process.env.GITLAB_USER " , process.env.GITLAB_USER);
+                    console.log("process.env.GITLAB_PASSWORD  " , process.env.GITLAB_PASSWORD);
                     // if (reviewers.length === 0) {
                     if (reviewers.length != 0) {
                         console.log('Skipping because there are no reviewers found.... debug 2');
