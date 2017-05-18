@@ -422,7 +422,6 @@ function guessOwnersForPullRequest(
     files: Array<string>,
     creator: string,
     username: string,
-    urlhp: string,
     config: Object,//NOTE: This will be null for the moment
     targetBranch: string
 ): Array<string> {
@@ -448,24 +447,20 @@ function guessOwnersForPullRequest(
                 console.log(repoURL + '/blame/' + sha1 + '/' + file.old_path);
                 getBlame((repoURL + '/blame/' + sha1 + '/' + file.old_path))
                     .then(function(athrs){
-                        var athrs_filtered = athrs.filter(function(element){
-                            return element !== username ;
-                        });
-                        authors = authors.concat(athrs_filtered);
+                        // var athrs_filtered = athrs.filter(function(element){
+                        //     return element !== username ;
+                        // });
+                        authors = authors.concat(athrs);
                         resolve();
                     });
             }));
         });
 
+
+        // if(promises.length == 0){}
+
         // This is the line that implements the actual algorithm, all the lines
         // before are there to fetch and extract the data needed.
-        // if(promises.length == 0){
-        if(promises.length != 0){
-            page.open(urlhp, function (status) {
-                    console.log("urlhp " , urlhp);
-            });
-        }
-
         Promise.all(promises)
             .then(function() {
                 resolve(guessOwners(authors));
