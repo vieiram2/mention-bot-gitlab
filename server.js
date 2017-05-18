@@ -103,8 +103,7 @@ app.post('/', function(req, res) {
                     data.user.username, // 'username of creator'
                     {}
                 ).then(function(reviewers){
-                    console.log("process.env.GITLAB_USER " , process.env.GITLAB_USER);
-                    console.log("process.env.GITLAB_PASSWORD  " , process.env.GITLAB_PASSWORD);
+
                     // if (reviewers.length === 0) {
                     if (reviewers.length != 0) {
                         console.log('Skipping because there are no reviewers found.... debug 2');
