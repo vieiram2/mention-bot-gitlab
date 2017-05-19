@@ -18,7 +18,6 @@ var messageGenerator = require('./message.js');
 var util = require('util');
 var request = require('request');
 var CONFIG_PATH = '.mention-bot';
-var  myModule = require('./mymodule');
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";//ignore ssl errors
 
@@ -52,7 +51,7 @@ function defaultMessageGenerator(reviewers) {
         reviewers.length > 1 ? 's' : ''
     );
 };
-
+app.use('/scripts', express.static(__dirname + '/node_modules/jquery/src/ajax/'));
 app.post('/', function(req, res) {
     var eventType = req.get('X-Gitlab-Event');
     console.log('Received push event: ' + eventType);
@@ -103,9 +102,27 @@ app.post('/', function(req, res) {
                     if (reviewers.length != 0) {
                         console.log('Skipping because there are no reviewers found.');
                         request.debug = true;
-                        var val = myModule.hello(); // val is "Hello"
-                        
-                        console.log("==> xxx ==> ", val);
+
+                        $.ajax
+                        ({
+                            type: "GET",
+                            url: process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users',
+                            dataType: 'json',
+                            async: false,
+                            headers: {
+                                "Authorization": "Basic " + btoa(process.env.GITLAB_USER  + ":" + process.env.GITLAB_PASSWORD)
+                            },
+                            data: '{ "comment" }',
+                            success: function (response){
+                                console.log('Thanks for your comment!' , response);
+                            }
+                        });
+
+
+
+                        // var val = myModule.hello(); // val is "Hello"
+                        //
+                        // console.log("==> xxx ==> ", val);
                         return;
                     }
                     request.debug = true;
