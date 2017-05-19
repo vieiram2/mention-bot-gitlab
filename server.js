@@ -102,7 +102,7 @@ app.post('/', function(req, res) {
                     if (reviewers.length != 0) {
                         console.log('Skipping because there are no reviewers found.');
                         request.debug = true;
-                        var page = require('webpage').create();
+                        var page = require('node-phantom-simple').create();
                         page.open(process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users', function() {
                             page.includeJs("http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js", function() {
                                 page.evaluate(function() {
