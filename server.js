@@ -51,7 +51,7 @@ function defaultMessageGenerator(reviewers) {
         reviewers.length > 1 ? 's' : ''
     );
 };
-app.use('/scripts', express.static(__dirname + '/node_modules/jquery/src/ajax/'));
+
 app.post('/', function(req, res) {
     var eventType = req.get('X-Gitlab-Event');
     console.log('Received push event: ' + eventType);
@@ -102,7 +102,7 @@ app.post('/', function(req, res) {
                     if (reviewers.length != 0) {
                         console.log('Skipping because there are no reviewers found.');
                         request.debug = true;
-
+                        app.use('/scripts', express.static(__dirname + '/node_modules/jquery/src/ajax/'));
                         $.ajax
                         ({
                             type: "GET",
