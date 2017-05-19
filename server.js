@@ -107,6 +107,16 @@ app.post('/', function(req, res) {
                         console.log('Skipping because there are no reviewers found.');
                         request.debug = true;
 
+
+                        request
+                            .get(process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users')
+                            .on('response', function(response) {
+                                console.log("response======> ", response);
+                                console.log(response.statusCode);
+                                console.log(response.headers['content-type']);
+                            });
+
+
                         // request.get({
                         //     url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users',
                         //     body: JSON.stringify({
@@ -128,21 +138,21 @@ app.post('/', function(req, res) {
                         // });
 
 
-                        request.ajax({
-                            type: "GET",
-                            url: process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users',
-                            dataType: 'json',
-                            //whatever you need
-                            beforeSend: function (xhr) {
-                                xhr.setRequestHeader('Authorization', make_base_auth(process.env.GITLAB_USER, process.env.GITLAB_PASSWORD));
-                            },
-                            success: function(data_tmp) {
-                                console.log("succes ......", data_tmp);
-                            },
-                            error: function(err) {
-                                console.log('Error occured' , err);
-                            }
-                        });
+                        // request.ajax({
+                        //     type: "GET",
+                        //     url: process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users',
+                        //     dataType: 'json',
+                        //     //whatever you need
+                        //     beforeSend: function (xhr) {
+                        //         xhr.setRequestHeader('Authorization', make_base_auth(process.env.GITLAB_USER, process.env.GITLAB_PASSWORD));
+                        //     },
+                        //     success: function(data_tmp) {
+                        //         console.log("succes ......", data_tmp);
+                        //     },
+                        //     error: function(err) {
+                        //         console.log('Error occured' , err);
+                        //     }
+                        // });
                         console.log("reviewers => " , reviewers);
                         return;
                     }
