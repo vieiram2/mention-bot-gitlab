@@ -247,7 +247,7 @@ function fetch(url: string): string {
 }
 
 function getAllMembers(url){
-
+    console.log("getAllMembers function") ;
     var username = process.env.GITLAB_USER;
     var password = process.env.GITLAB_PASSWORD;
     return new Promise(function(resolve, reject){
@@ -348,6 +348,7 @@ function getAllMembers(url){
     });
 }
 function getBlame(url){
+    console.log("getBlame function") ;
     var username = process.env.GITLAB_USER;
     var password = process.env.GITLAB_PASSWORD;
     return new Promise(function(resolve, reject){
