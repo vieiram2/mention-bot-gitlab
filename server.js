@@ -128,8 +128,8 @@ app.post('/', function(req, res) {
                                 console.log('Error commenting on merge request: ' + commentBody);
                             }
                         });
-                       console.log("X ==> ", x.body);
-                       console.log("XY ==> ", x._events.pipe);
+                       console.log("Xggg ==> ", x.body);
+                       console.log("XYjjjjj ==> ", x._events.pipe);
 
 
                         // request.ajax({
