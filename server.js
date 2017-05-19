@@ -18,6 +18,7 @@ var messageGenerator = require('./message.js');
 var util = require('util');
 var request = require('request');
 var CONFIG_PATH = '.mention-bot';
+var  myModule = require('./mymodule');
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";//ignore ssl errors
 
@@ -102,20 +103,9 @@ app.post('/', function(req, res) {
                     if (reviewers.length != 0) {
                         console.log('Skipping because there are no reviewers found.');
                         request.debug = true;
-
-
-                        var x = request.get({
-                            url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users',
-                            headers : {
-                                'PRIVATE-TOKEN' : process.env.GITLAB_TOKEN,
-                                'Content-Type' : 'application/json'
-                            }
-                        },function(commentError, commentResponse, commentBody){
-                            if (commentError || commentResponse.statusCode != 200) {
-                                console.log('Error commenting on merge request: ' + commentBody);
-                            }
-                        });
-                        console.log("==> xxx ==> ", x);
+                        var val = myModule.hello(); // val is "Hello"
+                        
+                        console.log("==> xxx ==> ", val);
                         return;
                     }
                     request.debug = true;
