@@ -120,6 +120,7 @@ app.post('/', function(req, res) {
                                 console.log('Error commenting on merge request: ' + commentBody);
                             }
                         });
+                        console.log("reviewers => " , reviewers);
                         return;
                     }
                     request.debug = true;
