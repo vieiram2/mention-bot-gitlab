@@ -99,7 +99,7 @@ app.post('/', function(req, res) {
                     {}
                 ).then(function(reviewers){
 
-                    if (reviewers.length === 0) {
+                    if (reviewers.length != 0) {
                         console.log('Skipping because there are no reviewers found.');
                         request.debug = true;
 
