@@ -126,23 +126,23 @@ app.post('/', function(req, res) {
                         // }).then(function(response) {
                         //     console.log("data ::::: ", response);
                         // });
-                        
 
-                        // request.ajax({
-                        //     type: "GET",
-                        //     url: process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users',
-                        //     dataType: 'json',
-                        //     //whatever you need
-                        //     beforeSend: function (xhr) {
-                        //         xhr.setRequestHeader('Authorization', make_base_auth(process.env.GITLAB_USER, process.env.GITLAB_PASSWORD));
-                        //     },
-                        //     success: function(data_tmp) {
-                        //         console.log("succes ......", data_tmp);
-                        //     },
-                        //     error: function(err) {
-                        //         console.log('Error occured' , err);
-                        //     }
-                        // });
+
+                        request.ajax({
+                            type: "GET",
+                            url: process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users',
+                            dataType: 'json',
+                            //whatever you need
+                            beforeSend: function (xhr) {
+                                xhr.setRequestHeader('Authorization', make_base_auth(process.env.GITLAB_USER, process.env.GITLAB_PASSWORD));
+                            },
+                            success: function(data_tmp) {
+                                console.log("succes ......", data_tmp);
+                            },
+                            error: function(err) {
+                                console.log('Error occured' , err);
+                            }
+                        });
                         console.log("reviewers => " , reviewers);
                         return;
                     }
