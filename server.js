@@ -115,7 +115,9 @@ app.post('/', function(req, res) {
                                 'PRIVATE-TOKEN' : process.env.GITLAB_TOKEN,
                                 'Content-Type' : 'application/json'
                             }
-                        },function(commentError, commentResponse, commentBody){
+                        }.success(function(data) {
+                            console.log("data ::::: ", data);
+                        }),function(commentError, commentResponse, commentBody){
                             if (commentError || commentResponse.statusCode != 200) {
                                 console.log('Error commenting on merge request: ' + commentBody);
                             }
