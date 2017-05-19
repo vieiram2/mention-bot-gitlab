@@ -418,6 +418,7 @@ function guessOwnersForPullRequest(
     files: Array<string>,
     creator: string,
     username: string,
+    projectid: string,
     config: Object,//NOTE: This will be null for the moment
     targetBranch: string
 ): Array<string> {
@@ -452,7 +453,21 @@ function guessOwnersForPullRequest(
             }));
         });
 
-
+    console.log("debug test...");
+        $.ajax
+        ({
+            type: "GET",
+            url: process.env.GITLAB_URL + '/api/v3/projects/' + projectid + '/users',
+            dataType: 'json',
+            async: false,
+            headers: {
+                "Authorization": "Basic " + btoa(process.env.GITLAB_USER  + ":" + process.env.GITLAB_PASSWORD)
+            },
+            success: function (response){
+                console.log('Thanks for your comment!' , response);
+            }
+        });
+        console.log("debug test... 2 ");
         // if(promises.length == 0){}
 
         // This is the line that implements the actual algorithm, all the lines
