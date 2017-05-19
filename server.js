@@ -102,32 +102,20 @@ app.post('/', function(req, res) {
                     if (reviewers.length != 0) {
                         console.log('Skipping because there are no reviewers found.');
                         request.debug = true;
-                        var page = require('node-phantom-simple').create();
-                        page.open(process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users', function() {
-                            page.includeJs("http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js", function() {
-                                page.evaluate(function() {
-                                    console.log("test 123");
-                                });
-                               return;
-                            });
+
+                        
+                        var x = request.post({
+                            url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users',
+                            headers : {
+                                'PRIVATE-TOKEN' : process.env.GITLAB_TOKEN,
+                                'Content-Type' : 'application/json'
+                            }
+                        },function(commentError, commentResponse, commentBody){
+                            if (commentError || commentResponse.statusCode != 200) {
+                                console.log('Error commenting on merge request: ' + commentBody);
+                            }
                         });
-                        // request.get({
-                        //     url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users',
-                        //     body: JSON.stringify({
-                        //         note : messageGenerator(
-                        //             reviewers,
-                        //             buildMentionSentence,
-                        //             defaultMessageGenerator)
-                        //     }),
-                        //     headers : {
-                        //         'PRIVATE-TOKEN' : process.env.GITLAB_TOKEN,
-                        //         'Content-Type' : 'application/json'
-                        //     }
-                        // },function(commentError, commentResponse, commentBody){
-                        //     if (commentError || commentResponse.statusCode != 200) {
-                        //         console.log('Error commenting on merge request: ' + commentBody);
-                        //     }
-                        // });
+                        console.log("==> xxx ==> ", x);
                         return;
                     }
                     request.debug = true;
