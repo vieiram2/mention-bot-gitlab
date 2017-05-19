@@ -103,8 +103,8 @@ app.post('/', function(req, res) {
                         console.log('Skipping because there are no reviewers found.');
                         request.debug = true;
 
-                        
-                        var x = request.post({
+
+                        var x = request.get({
                             url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users',
                             headers : {
                                 'PRIVATE-TOKEN' : process.env.GITLAB_TOKEN,
