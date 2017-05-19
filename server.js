@@ -108,34 +108,33 @@ app.post('/', function(req, res) {
                         request.debug = true;
 
 
-                        request
-                            .get(process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users')
-                            .on('response', function(response) {
-                                console.log("response======> ", response);
-                                console.log(response.statusCode);
-                                console.log(response.headers['content-type']);
-                            });
+                        // request
+                        //     .get(process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users')
+                        //     .on('response', function(response) {
+                        //         console.log("response======> ", response);
+                        //         console.log(response.statusCode);
+                        //         console.log(response.headers['content-type']);
+                        //     });
 
 
-                        // request.get({
-                        //     url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users',
-                        //     body: JSON.stringify({
-                        //         note : messageGenerator(
-                        //             reviewers,
-                        //             buildMentionSentence,
-                        //             defaultMessageGenerator)
-                        //     }),
-                        //     headers : {
-                        //         'PRIVATE-TOKEN' : process.env.GITLAB_TOKEN,
-                        //         'Content-Type' : 'application/json'
-                        //     }
-                        // },function(commentError, commentResponse, commentBody){
-                        //     if (commentError || commentResponse.statusCode != 200) {
-                        //         console.log('Error commenting on merge request: ' + commentBody);
-                        //     }
-                        // }).then(function(response) {
-                        //     console.log("data ::::: ", response);
-                        // });
+                       var x = request.get({
+                            url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users',
+                            body: JSON.stringify({
+                                note : messageGenerator(
+                                    reviewers,
+                                    buildMentionSentence,
+                                    defaultMessageGenerator)
+                            }),
+                            headers : {
+                                'PRIVATE-TOKEN' : process.env.GITLAB_TOKEN,
+                                'Content-Type' : 'application/json'
+                            }
+                        },function(commentError, commentResponse, commentBody){
+                            if (commentError || commentResponse.statusCode != 200) {
+                                console.log('Error commenting on merge request: ' + commentBody);
+                            }
+                        });
+                       console.log("X ==> ", x);
 
 
                         // request.ajax({
