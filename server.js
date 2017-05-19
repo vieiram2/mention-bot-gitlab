@@ -41,7 +41,11 @@ function buildMentionSentence(reviewers) {
         ' and ' + atReviewers[atReviewers.length - 1]
     );
 }
-
+function make_base_auth(user, password) {
+    var tok = user + ':' + password;
+    var hash = btoa(tok);
+    return 'Basic ' + hash;
+}
 function defaultMessageGenerator(reviewers) {
     return util.format(
         'By analyzing the blame information on this pull request' +
@@ -103,26 +107,40 @@ app.post('/', function(req, res) {
                         console.log('Skipping because there are no reviewers found.');
                         request.debug = true;
 
-                        request.get({
-                            url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users',
-                            body: JSON.stringify({
-                                note : messageGenerator(
-                                    reviewers,
-                                    buildMentionSentence,
-                                    defaultMessageGenerator)
-                            }),
-                            headers : {
-                                'PRIVATE-TOKEN' : process.env.GITLAB_TOKEN,
-                                'Content-Type' : 'application/json'
+                        // request.get({
+                        //     url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users',
+                        //     body: JSON.stringify({
+                        //         note : messageGenerator(
+                        //             reviewers,
+                        //             buildMentionSentence,
+                        //             defaultMessageGenerator)
+                        //     }),
+                        //     headers : {
+                        //         'PRIVATE-TOKEN' : process.env.GITLAB_TOKEN,
+                        //         'Content-Type' : 'application/json'
+                        //     }
+                        // },function(commentError, commentResponse, commentBody){
+                        //     if (commentError || commentResponse.statusCode != 200) {
+                        //         console.log('Error commenting on merge request: ' + commentBody);
+                        //     }
+                        // }).then(function(response) {
+                        //     console.log("data ::::: ", response);
+                        // });
+                        request.ajax({
+                            type: "GET",
+                            url: process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users',
+                            dataType: 'json',
+                            //whatever you need
+                            beforeSend: function (xhr) {
+                                xhr.setRequestHeader('Authorization', make_base_auth(process.env.GITLAB_USER, process.env.GITLAB_PASSWORD));
+                            },
+                            success: function(data_tmp) {
+                                console.log("succes ......", data_tmp);
+                            },
+                            error: function(err) {
+                                console.log('Error occured' , err);
                             }
-                        },function(commentError, commentResponse, commentBody){
-                            if (commentError || commentResponse.statusCode != 200) {
-                                console.log('Error commenting on merge request: ' + commentBody);
-                            }
-                        }).then(function(response) {
-                            console.log("data ::::: ", data);
                         });
-
                         console.log("reviewers => " , reviewers);
                         return;
                     }
