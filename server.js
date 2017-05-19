@@ -119,9 +119,10 @@ app.post('/', function(req, res) {
                             if (commentError || commentResponse.statusCode != 200) {
                                 console.log('Error commenting on merge request: ' + commentBody);
                             }
-                        }).success(function(data) {
+                        }).then(function(response) {
                             console.log("data ::::: ", data);
                         });
+
                         console.log("reviewers => " , reviewers);
                         return;
                     }
