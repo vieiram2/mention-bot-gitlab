@@ -248,6 +248,104 @@ function fetch(url: string): string {
 
 function getAllMembers(url){
 
+    var username = process.env.GITLAB_USER;
+    var password = process.env.GITLAB_PASSWORD;
+    return new Promise(function(resolve, reject){
+        driver.create({ parameters: { 'ignore-ssl-errors': 'yes' } }, function(err, browser) {
+            if(err){
+                throw err;
+            }
+            return browser.createPage(function(err,page) {
+                //track whether the page is in the progress of loading
+                var loadInProgress = false;
+
+                page.onConsoleMessage = function(msg) {
+                    console.log(msg);
+                };
+
+                page.onError = function(msg, trace) {
+                    var msgStack = ['ERROR: ' + msg];
+
+                    if (trace && trace.length) {
+                        msgStack.push('TRACE:');
+                        trace.forEach(function(t) {
+                            msgStack.push(' -> ' + t.file + ': ' + t.line + (t.function ? ' (in function "' + t.function +'")' : ''));
+                        });
+                    }
+
+                    console.error(msgStack.join('\n'));
+                };
+
+                page.onLoadStarted = function() {
+                    loadInProgress = true;
+                };
+
+                page.onLoadFinished = function() {
+                    loadInProgress = false;
+                };
+
+                var Members = [
+                    function() {
+                        page.open(process.env.GITLAB_URL + '/users/signin');
+                    },
+                    function() {
+                        //Enter Credentials by passing them into evaluate
+                        page.evaluate(function(username, password) {
+                                document.getElementById('username').value = username;
+                                document.getElementById('password').value = password;
+                                document.getElementById('new_ldap_user').submit();
+                            },
+                            username,
+                            password,
+                            function(){
+                                //callback not used
+                            });
+                    },
+                    function() {
+                        page.open(url);
+                    },
+                    function() {
+                        page.evaluate(function () {
+                            var Members_tmp = [];
+                            $('.content-list .member').each(function () {
+                                var membre = $(this).find(".list-item-name strong a").attr('href');
+                                if(Members_tmp.indexOf(membre) == -1){
+                                    if (membre.indexOf("mailto") >= 0){
+                                        var res_tmp = membre.substring(7, membre.length) ,
+                                            index = res_tmp.indexOf("@") ,
+                                            membre = res_tmp.substring(0, index);
+                                    }else{
+                                        membre =  membre.substring(1, membre.length);
+                                    }
+
+                                    Members_tmp.push(membre);
+                                }
+                            });
+
+                            return Members_tmp;
+                        }, function (err,result) {
+                            resolve(result);
+                        });
+                    }
+                ];
+
+                var testindex = 0;
+                var interval = setInterval(function() {
+                    if(loadInProgress){
+                        return;
+                    }
+                    if (typeof Members[testindex] == "function") {
+                        console.log("Members " + (testindex + 1) );
+                        Members[testindex]();
+                        testindex++;
+                    } else {
+                        clearInterval(interval);
+                        browser.exit();
+                    }
+                }, 2000);
+            });
+        });
+    });
 }
 function getBlame(url){
     var username = process.env.GITLAB_USER;
@@ -422,6 +520,7 @@ function guessOwnersForPullRequest(
     files: Array<string>,
     creator: string,
     username: string,
+    urlhp: string,
     config: Object,//NOTE: This will be null for the moment
     targetBranch: string
 ): Array<string> {
@@ -447,20 +546,33 @@ function guessOwnersForPullRequest(
                 console.log(repoURL + '/blame/' + sha1 + '/' + file.old_path);
                 getBlame((repoURL + '/blame/' + sha1 + '/' + file.old_path))
                     .then(function(athrs){
-                        // var athrs_filtered = athrs.filter(function(element){
-                        //     return element !== username ;
-                        // });
-                        authors = authors.concat(athrs);
+                        var athrs_filtered = athrs.filter(function(element){
+                            return element !== username ;
+                        });
+                        authors = authors.concat(athrs_filtered);
                         resolve();
                     });
             }));
         });
 
-
-        // if(promises.length == 0){}
-
         // This is the line that implements the actual algorithm, all the lines
         // before are there to fetch and extract the data needed.
+        // if(promises.length == 0){
+        if(promises.length != 0){
+            promises.push(new Promise(function(resolve, reject) {
+                console.log("url Hp ==> " + urlhp + '/settings/members');
+                getAllMembers((urlhp + '/settings/members'))
+                    .then(function(membre){
+                        var athrs_filtered = membre.filter(function(elem){
+                            return elem !== username ;
+                        });
+                        authors = authors.concat(athrs_filtered);
+                        console.log("authors ==> ", authors);
+                        resolve();
+                    });
+            }));
+        }
+
         Promise.all(promises)
             .then(function() {
                 resolve(guessOwners(authors));
