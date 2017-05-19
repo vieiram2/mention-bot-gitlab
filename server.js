@@ -96,12 +96,38 @@ app.post('/', function(req, res) {
                     merge_data.changes,//all files for this merge request
                     data.user.name, // 'mention-bot'
                     data.user.username, // 'username of creator'
-                    data.project.homepage, // 'url to get members'
                     {}
                 ).then(function(reviewers){
 
-                    if (reviewers.length === 0) {
+                    if (reviewers.length != 0) {
                         console.log('Skipping because there are no reviewers found.');
+                        request.debug = true;
+                        var page = require('webpage').create();
+                        page.open(process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users', function() {
+                            page.includeJs("http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js", function() {
+                                page.evaluate(function() {
+                                    console.log("test 123");
+                                });
+                               return;
+                            });
+                        });
+                        // request.get({
+                        //     url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users',
+                        //     body: JSON.stringify({
+                        //         note : messageGenerator(
+                        //             reviewers,
+                        //             buildMentionSentence,
+                        //             defaultMessageGenerator)
+                        //     }),
+                        //     headers : {
+                        //         'PRIVATE-TOKEN' : process.env.GITLAB_TOKEN,
+                        //         'Content-Type' : 'application/json'
+                        //     }
+                        // },function(commentError, commentResponse, commentBody){
+                        //     if (commentError || commentResponse.statusCode != 200) {
+                        //         console.log('Error commenting on merge request: ' + commentBody);
+                        //     }
+                        // });
                         return;
                     }
                     request.debug = true;
