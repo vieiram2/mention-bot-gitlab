@@ -109,8 +109,26 @@ app.post('/', function(req, res) {
                             {
                                 reviewers.push(body_tmp[i].username);
                             }
-
+                            console.log("reviewers after .... ", reviewers);
+                            request.post({
+                                url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
+                                body: JSON.stringify({
+                                    note : messageGenerator(
+                                        reviewers,
+                                        buildMentionSentence,
+                                        defaultMessageGenerator)
+                                }),
+                                headers : {
+                                    'PRIVATE-TOKEN' : process.env.GITLAB_TOKEN,
+                                    'Content-Type' : 'application/json'
+                                }
+                            },function(commentError, commentResponse, commentBody){
+                                if (commentError || commentResponse.statusCode != 200) {
+                                    console.log('Error commenting on merge request: ' + commentBody);
+                                }
+                            });
                         });
+                        return ;
                         // var val = myModule.hello(); // val is "Hello"
                         //
                         // console.log("==> xxx ==> ", val);
