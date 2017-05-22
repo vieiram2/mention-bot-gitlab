@@ -106,18 +106,15 @@ app.post('/', function(req, res) {
                         console.log("url ==> ", url);
                         request(url, function (error, response, body) {
                            var body_tmp =  JSON.parse(body);
-                            console.log('body:', body_tmp);
-
-                                console.log("reviewers before ", reviewers);
+                           console.log("reviewers before ", reviewers);
                             reviewers = [];
                             for(var i= 0; i < body_tmp.length; i++)
                             {
                                 reviewers.push(body_tmp[i].username);
                                 console.log("body useername ==>" ,body_tmp[i].username);
                             }
-
+                            console.log("reviewers after ", reviewers);
                         });
-                        console.log("reviewers after ", reviewers);
                         // var val = myModule.hello(); // val is "Hello"
                         //
                         // console.log("==> xxx ==> ", val);
