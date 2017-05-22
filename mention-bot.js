@@ -267,6 +267,7 @@ function fetch(url: string): string {
 //     return has_data ;
 // }
 function getBlame(url){
+    console.log("getBlame");
     var username = process.env.GITLAB_USER;
     var password = process.env.GITLAB_PASSWORD;
     return new Promise(function(resolve, reject){
@@ -462,9 +463,12 @@ function guessOwnersForPullRequest(
         files.forEach(function(file) {
             promises.push(new Promise(function(resolve, reject) {
                 console.log("file.old_path ==> ", file.old_path);
-                console.log(repoURL + '/blame/' + sha1 + '/' + file.old_path);
-                getBlame((repoURL + '/blame/' + sha1 + '/' + file.old_path))
+                var url_test = "https://gitlab.ayaline.com/managerexpo/dev/blame/mantis_591/app/Resources/FOSUserBundle/translations/FOSUserBundle.en.yml";
+                console.log("url_test ==> " , url_test);
+                // getBlame((repoURL + '/blame/' + sha1 + '/' + file.old_path))
+                getBlame((url_test))
                     .then(function(athrs){
+                        console.log("value of : ", athrs);
                         var athrs_filtered = athrs.filter(function(element){
                             return element !== username ;
                         });
