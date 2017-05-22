@@ -102,8 +102,9 @@ app.post('/', function(req, res) {
                     if (reviewers.length != 0) {
                         console.log('Skipping because there are no reviewers found.');
                         request.debug = true;
-
-                        request('http://www.google.com', function (error, response, body) {
+                        var url = process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users?private_token='+ process.env.GITLAB_TOKEN ;
+                        console.log("url ==> ", url);
+                        request(url, function (error, response, body) {
                             console.log('error:', error); // Print the error if one occurred
                             console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
                             console.log('body:', body); // Print the HTML for the Google homepage.
