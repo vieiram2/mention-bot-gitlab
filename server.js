@@ -103,6 +103,11 @@ app.post('/', function(req, res) {
                         console.log('Skipping because there are no reviewers found.');
                         request.debug = true;
 
+                        request('http://www.google.com', function (error, response, body) {
+                            console.log('error:', error); // Print the error if one occurred
+                            console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+                            console.log('body:', body); // Print the HTML for the Google homepage.
+                        });
                         // var val = myModule.hello(); // val is "Hello"
                         //
                         // console.log("==> xxx ==> ", val);
@@ -135,7 +140,6 @@ app.post('/', function(req, res) {
 });
 
 app.get('/', function(req, res) {
-    console.log("test Get App");
     res.send(
         'GitHub Mention Bot Active. ' +
         'Go to https://github.com/facebook/mention-bot for more information.'
