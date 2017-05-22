@@ -29,12 +29,12 @@ if (!process.env.GITLAB_TOKEN || !process.env.GITLAB_URL || !process.env.GITLAB_
 
 var app = express();
 
-function RemoveMembersBlocked(reviewers) {
+function RemoveMembersBlocked(reviewers,target_project_id , creator_username) {
     console.log("test RemoveMembersBlocked" , reviewers);
     console.log("in update");
 // var url_users_bloced = process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users' ;
-    data.object_attributes.target_project_id = 768;
-    var url_users_bloced = process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users?private_token='+ process.env.GITLAB_TOKEN ;
+
+    var url_users_bloced = process.env.GITLAB_URL + '/api/v3/projects/'+target_project_id+'/users?private_token='+ process.env.GITLAB_TOKEN ;
     console.log("url_users_bloced===> ", url_users_bloced);
     var members_blocked = [];
     request(url_users_bloced, function (error, response, body) {
@@ -45,7 +45,7 @@ function RemoveMembersBlocked(reviewers) {
         var members = [];
         for(var i= 0; i < body_tmp.length; i++)
         {
-            if( data.user.username  != body_tmp[i].username){
+            if( creator_username  != body_tmp[i].username){
                 console.log("state ::: ", body_tmp[i].state );
                 if(body_tmp[i].state == "blocked" ){
                     members_blocked.push(body_tmp[i].username);
@@ -139,7 +139,7 @@ app.post('/', function(req, res) {
                                     members.push(body_tmp[i].username);
                                 }
                             }
-                            var Members_Blocked = RemoveMembersBlocked(members);
+                            var Members_Blocked = RemoveMembersBlocked(members ,data.object_attributes.target_project_id ,data.user.username);
                             request.post({
                                 url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
                                 body: JSON.stringify({
@@ -161,7 +161,7 @@ app.post('/', function(req, res) {
                         return ;
                     }
                     request.debug = true;
-                    var Members_Blocked = RemoveMembersBlocked();
+                    var Members_Blocked =  RemoveMembersBlocked(reviewers ,data.object_attributes.target_project_id ,data.user.username);
                     request.post({
                         url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
                         body: JSON.stringify({
