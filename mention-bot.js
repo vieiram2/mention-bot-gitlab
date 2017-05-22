@@ -474,7 +474,7 @@ function guessOwnersForPullRequest(
             }));
         });
 
-
+console.log("after step 4");
         getMember(urlmember)
             .then(function(members){
                 console.log(members);
