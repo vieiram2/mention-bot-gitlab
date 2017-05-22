@@ -197,7 +197,6 @@ app.post('/', function(req, res) {
                     /***********************************************************/
 
                     // var url_users_bloced = process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users' ;
-                    console.log("--- reviewers ------> ", reviewers);
                     var url_users_bloced = process.env.GITLAB_URL + '/api/v3/projects/'+768+'/users?private_token='+ process.env.GITLAB_TOKEN ;
                     console.log("url_users_bloced===> ", url_users_bloced);
                     var members_blocked = [];
@@ -229,6 +228,8 @@ app.post('/', function(req, res) {
                         console.log("members_tmp ", members_tmp );
                     });
                     /***********************************************************/
+
+
                     request.post({
                         url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
                         body: JSON.stringify({
