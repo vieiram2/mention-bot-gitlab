@@ -84,8 +84,7 @@ app.post('/', function(req, res) {
                 return res.end();
             }
 
-            var merge_data = {} ,
-                urlmembers = process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users?private_token='+ process.env.GITLAB_TOKEN;
+            var merge_data = {};
             try { merge_data = JSON.parse(body.toString()); } catch (e) {}
 
             console.log("data.project.homepage ==> " , data.project.homepage);
@@ -97,7 +96,6 @@ app.post('/', function(req, res) {
                     merge_data.changes,//all files for this merge request
                     data.user.name, // 'mention-bot'
                     data.user.username, // 'username of creator'
-                    urlmembers,
                     {}
                 ).then(function(reviewers){
 
@@ -137,6 +135,7 @@ app.post('/', function(req, res) {
 });
 
 app.get('/', function(req, res) {
+    console.log("test Get App");
     res.send(
         'GitHub Mention Bot Active. ' +
         'Go to https://github.com/facebook/mention-bot for more information.'
