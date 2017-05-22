@@ -108,10 +108,9 @@ app.post('/', function(req, res) {
                            var body_tmp =  JSON.parse(body);
                             console.log('body:', body_tmp);
 
-                            
+                                console.log("reviewers before ", reviewers);
                             for(var i= 0; i < body_tmp.length; i++)
                             {
-                                console.log("body ==>",body_tmp[i]);
                                 console.log("body useername ==>" ,body_tmp[i].username);
                             }
 
