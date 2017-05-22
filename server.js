@@ -90,7 +90,7 @@ app.post('/', function(req, res) {
                 console.log("in update");
                 // var url_users_bloced = process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users' ;
                 data.object_attributes.target_project_id = 768;
-                var url_users_bloced = process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users' ;
+                var url_users_bloced = process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users?private_token='+ process.env.GITLAB_TOKEN ;
                 console.log("url_users_bloced===> ", url_users_bloced);
                 var members_blocked = [];
                 request(url_users_bloced, function (error, response, body) {
