@@ -109,12 +109,10 @@ app.post('/', function(req, res) {
                             {
                                 reviewers.push(body_tmp[i].username);
                             }
-                            JSON.stringify({
-                                note : messageGenerator(
+                             messageGenerator(
                                     reviewers,
                                     buildMentionSentence,
-                                    defaultMessageGenerator)
-                            })
+                                    defaultMessageGenerator);
                             console.log("reviewers after ... ", reviewers);
                         });
                         // var val = myModule.hello(); // val is "Hello"
