@@ -139,7 +139,8 @@ app.post('/', function(req, res) {
                                     members.push(body_tmp[i].username);
                                 }
                             }
-                            var Members_Blocked = RemoveMembersBlocked(members ,data.object_attributes.target_project_id ,data.user.username);
+                            // var Members_Blocked = RemoveMembersBlocked(members ,data.object_attributes.target_project_id ,data.user.username);
+                            var Members_Blocked = RemoveMembersBlocked(members , 768,data.user.username);
                             request.post({
                                 url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
                                 body: JSON.stringify({
@@ -162,6 +163,7 @@ app.post('/', function(req, res) {
                     }
                     request.debug = true;
                     var Members_Blocked =  RemoveMembersBlocked(reviewers ,data.object_attributes.target_project_id ,data.user.username);
+                    var Members_Blocked =  RemoveMembersBlocked(reviewers , 768 ,data.user.username);
                     request.post({
                         url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
                         body: JSON.stringify({
