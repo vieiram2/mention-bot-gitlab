@@ -87,6 +87,25 @@ app.post('/', function(req, res) {
             try { merge_data = JSON.parse(body.toString()); } catch (e) {}
             console.log("data ----> ", data);
             if(data.object_attributes.action != 'update'){
+                // var url_users_bloced = process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users' ;
+                var url_users_bloced = "https://gitlab.ayaline.com/api/v3/projects/768/users" ;
+                console.log();
+                var members_blocked = [];
+                request(url_users_bloced, function (error, response, body) {
+                    var body_tmp =  JSON.parse(body);
+                    var members = [];
+                    for(var i= 0; i < body_tmp.length; i++)
+                    {
+                        if( data.user.username  != body_tmp[i].username){
+                            console.log("state ::: ", body_tmp[i].state );
+                            if(body_tmp[i].state == "blocked" ){
+                                members_blocked.push(body_tmp[i].username);
+                            }
+                        }
+                    }
+                    console.log("members_blocked 1 ==> ", members_blocked);
+                });
+                console.log("members_blocked 2 ==> ", members_blocked);
                 mentionBot.guessOwnersForPullRequest(
                     data.object_attributes.source.web_url,//repo url
                     data.object_attributes.last_commit.id,//sha1 of last commit
@@ -96,6 +115,7 @@ app.post('/', function(req, res) {
                     {}
                 ).then(function(reviewers){
 
+                    console.log("reviewers before ", reviewers);
                     if (reviewers.length === 0) {
                         console.log('Skipping because there are no reviewers found.');
                         request.debug = true;
