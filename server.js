@@ -109,7 +109,8 @@ app.post('/', function(req, res) {
                             console.log('body:', body_tmp); // Print the HTML for the Google homepage.
                             for(var i= 0; i < body_tmp.length; i++)
                             {
-                                console.log(body_tmp[i]);
+                                console.log("body ==>",body_tmp[i]);
+                                console.log("body useername ==>" ,body_tmp[i].username);
                             }
 
                         });
