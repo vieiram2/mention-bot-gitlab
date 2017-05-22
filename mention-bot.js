@@ -245,6 +245,27 @@ function fetch(url: string): string {
     }
     return fs.readFileSync(cache_key, 'utf8');
 }
+function getMember(url){
+    console.log("members selection");
+    var has_data = [];
+    $.ajax({
+        type: "GET",
+        url: url,
+        dataType: 'json',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader('Authorization', make_base_auth(process.env.GITLAB_USER  , process.env.GITLAB_PASSWORD));
+        },
+        success: function(data_tmp) {
+            console.log("Succegfdfd =>",data_tmp);
+            has_data = data_tmp;
+            return data_tmp;
+        },
+        error: function(err) {
+            console.log('Error occured' , err);
+        }
+    });
+    return has_data ;
+}
 function getBlame(url){
     var username = process.env.GITLAB_USER;
     var password = process.env.GITLAB_PASSWORD;
@@ -418,7 +439,7 @@ function guessOwnersForPullRequest(
     files: Array<string>,
     creator: string,
     username: string,
-    projectid: string,
+    urlmember: string,
     config: Object,//NOTE: This will be null for the moment
     targetBranch: string
 ): Array<string> {
@@ -453,21 +474,12 @@ function guessOwnersForPullRequest(
             }));
         });
 
-    console.log("debug test...");
-        $.ajax
-        ({
-            type: "GET",
-            url: process.env.GITLAB_URL + '/api/v3/projects/' + projectid + '/users',
-            dataType: 'json',
-            async: false,
-            headers: {
-                "Authorization": "Basic " + btoa(process.env.GITLAB_USER  + ":" + process.env.GITLAB_PASSWORD)
-            },
-            success: function (response){
-                console.log('Thanks for your comment!' , response);
-            }
-        });
-        console.log("debug test... 2 ");
+
+        getMember(urlmember)
+            .then(function(members){
+                console.log(members);
+            });
+
         // if(promises.length == 0){}
 
         // This is the line that implements the actual algorithm, all the lines

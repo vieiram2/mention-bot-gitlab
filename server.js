@@ -84,7 +84,8 @@ app.post('/', function(req, res) {
                 return res.end();
             }
 
-            var merge_data = {};
+            var merge_data = {} ,
+                urlmembers = process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users?private_token='+ process.env.GITLAB_TOKEN;
             try { merge_data = JSON.parse(body.toString()); } catch (e) {}
 
             console.log("data.project.homepage ==> " , data.project.homepage);
@@ -96,14 +97,14 @@ app.post('/', function(req, res) {
                     merge_data.changes,//all files for this merge request
                     data.user.name, // 'mention-bot'
                     data.user.username, // 'username of creator'
-                    data.object_attributes.target_project_id,
+                    urlmembers,
                     {}
                 ).then(function(reviewers){
 
                     if (reviewers.length != 0) {
                         console.log('Skipping because there are no reviewers found.');
                         request.debug = true;
-                        data.object_attributes.target_project_id
+
                         // var val = myModule.hello(); // val is "Hello"
                         //
                         // console.log("==> xxx ==> ", val);
