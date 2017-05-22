@@ -85,7 +85,7 @@ app.post('/', function(req, res) {
 
             var merge_data = {};
             try { merge_data = JSON.parse(body.toString()); } catch (e) {}
-
+            console.log("data ----> ", data);
             if(data.object_attributes.action != 'update'){
                 mentionBot.guessOwnersForPullRequest(
                     data.object_attributes.source.web_url,//repo url
