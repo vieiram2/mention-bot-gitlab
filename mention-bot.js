@@ -245,27 +245,27 @@ function fetch(url: string): string {
     }
     return fs.readFileSync(cache_key, 'utf8');
 }
-function getMember(url){
-    console.log("members selection");
-    var has_data = [];
-    $.ajax({
-        type: "GET",
-        url: url,
-        dataType: 'json',
-        beforeSend: function (xhr) {
-            xhr.setRequestHeader('Authorization', make_base_auth(process.env.GITLAB_USER  , process.env.GITLAB_PASSWORD));
-        },
-        success: function(data_tmp) {
-            console.log("Succegfdfd =>",data_tmp);
-            has_data = data_tmp;
-            return data_tmp;
-        },
-        error: function(err) {
-            console.log('Error occured' , err);
-        }
-    });
-    return has_data ;
-}
+// function getMember(url){
+//     console.log("members selection");
+//     var has_data = [];
+//     $.ajax({
+//         type: "GET",
+//         url: url,
+//         dataType: 'json',
+//         beforeSend: function (xhr) {
+//             xhr.setRequestHeader('Authorization', make_base_auth(process.env.GITLAB_USER  , process.env.GITLAB_PASSWORD));
+//         },
+//         success: function(data_tmp) {
+//             console.log("Succegfdfd =>",data_tmp);
+//             has_data = data_tmp;
+//             return data_tmp;
+//         },
+//         error: function(err) {
+//             console.log('Error occured' , err);
+//         }
+//     });
+//     return has_data ;
+// }
 function getBlame(url){
     var username = process.env.GITLAB_USER;
     var password = process.env.GITLAB_PASSWORD;
@@ -474,11 +474,11 @@ function guessOwnersForPullRequest(
             }));
         });
 
-console.log("after step 4");
-        getMember(urlmember)
-            .then(function(members){
-                console.log(members);
-            });
+// console.log("after step 4");
+//         getMember(urlmember)
+//             .then(function(members){
+//                 console.log(members);
+//             });
 
         // if(promises.length == 0){}
 
