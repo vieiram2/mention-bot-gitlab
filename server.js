@@ -103,18 +103,19 @@ app.post('/', function(req, res) {
 
                         request(url, function (error, response, body) {
                            var body_tmp =  JSON.parse(body);
-                           console.log("reviewers before ... ", reviewers);
-                            reviewers = [];
+                            var members = [];
                             for(var i= 0; i < body_tmp.length; i++)
                             {
-                                reviewers.push(body_tmp[i].username);
+                                console.log("process.env.GITLAB_USER  ==> " , process.env.GITLAB_USER );
+                                if( process.env.GITLAB_USER  != body_tmp[i].username){
+                                    members.push(body_tmp[i].username);
+                                }
                             }
-                            console.log("reviewers after .... ", reviewers);
                             request.post({
                                 url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
                                 body: JSON.stringify({
                                     note : messageGenerator(
-                                        reviewers,
+                                        members,
                                         buildMentionSentence,
                                         defaultMessageGenerator)
                                 }),
@@ -129,11 +130,7 @@ app.post('/', function(req, res) {
                             });
                         });
                         return ;
-                        // var val = myModule.hello(); // val is "Hello"
-                        //
-                        // console.log("==> xxx ==> ", val);
                     }
-                    console.log("reviewers after get ", reviewers);
                     request.debug = true;
 
                     request.post({
