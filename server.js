@@ -140,12 +140,8 @@ app.post('/', function(req, res) {
 
                             // var url_users_bloced = process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users' ;
                             var url_users_bloced = process.env.GITLAB_URL + '/api/v3/projects/'+768+'/users?private_token='+ process.env.GITLAB_TOKEN ;
-                            console.log("url_users_bloced===> ", url_users_bloced);
                             var members_blocked = [];
                             request(url_users_bloced, function (error, response, body) {
-                                console.log("in error " , error);
-                                console.log("in response " , response);
-                                console.log("in body ", body);
                                 var body_tmp =  JSON.parse(body);
                                 for(var i= 0; i < body_tmp.length; i++)
                                 {
@@ -156,8 +152,7 @@ app.post('/', function(req, res) {
                                     }
                                 }
                                 var members_tmp =[];
-                                console.log("member mmmmm : ", members);
-                                console.log("members_blocked mmmmm : ",  members_blocked);
+
                                 for(var i= 0; i < members.length; i++)
                                 {
                                     for(var j=0 ; j<members_blocked.length; j++ ){
@@ -166,33 +161,30 @@ app.post('/', function(req, res) {
                                         }
                                     }
                                 }
-
-                                console.log("members_tmp ", members_tmp );
+                                members = members_tmp ;
+                                request.post({
+                                    url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
+                                    body: JSON.stringify({
+                                        note : messageGenerator(
+                                            members,
+                                            buildMentionSentence,
+                                            defaultMessageGenerator)
+                                    }),
+                                    headers : {
+                                        'PRIVATE-TOKEN' : process.env.GITLAB_TOKEN,
+                                        'Content-Type' : 'application/json'
+                                    }
+                                },function(commentError, commentResponse, commentBody){
+                                    if (commentError || commentResponse.statusCode != 200) {
+                                        console.log('Error commenting on merge request: ' + commentBody);
+                                    }
+                                });
                             });
                             /***********************************************************/
-
-                            request.post({
-                                url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
-                                body: JSON.stringify({
-                                    note : messageGenerator(
-                                        members,
-                                        buildMentionSentence,
-                                        defaultMessageGenerator)
-                                }),
-                                headers : {
-                                    'PRIVATE-TOKEN' : process.env.GITLAB_TOKEN,
-                                    'Content-Type' : 'application/json'
-                                }
-                            },function(commentError, commentResponse, commentBody){
-                                if (commentError || commentResponse.statusCode != 200) {
-                                    console.log('Error commenting on merge request: ' + commentBody);
-                                }
-                            });
                         });
                         return ;
                     }
                     request.debug = true;
-                    // var Members_Blocked =  RemoveMembersBlocked(reviewers ,data.object_attributes.target_project_id ,data.user.username);
 
                     /***********************************************************/
 
@@ -201,9 +193,6 @@ app.post('/', function(req, res) {
                     console.log("url_users_bloced===> ", url_users_bloced);
                     var members_blocked = [];
                     request(url_users_bloced, function (error, response, body) {
-                        console.log("in error " , error);
-                        console.log("in response " , response);
-                        console.log("in body ", body);
                         var body_tmp =  JSON.parse(body);
                         for(var i= 0; i < body_tmp.length; i++)
                         {
@@ -214,8 +203,6 @@ app.post('/', function(req, res) {
                             }
                         }
                         var members_tmp =[];
-                        console.log("member mmmmm : ", reviewers);
-                        console.log("members_blocked mmmmm : ",  members_blocked);
                         for(var i= 0; i < reviewers.length; i++)
                         {
                             for(var j=0 ; j<members_blocked.length; j++ ){
@@ -224,29 +211,26 @@ app.post('/', function(req, res) {
                                 }
                             }
                         }
-
-                        console.log("members_tmp ", members_tmp );
+                        reviewers = members_tmp ;
+                        request.post({
+                            url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
+                            body: JSON.stringify({
+                                note : messageGenerator(
+                                    reviewers,
+                                    buildMentionSentence,
+                                    defaultMessageGenerator)
+                            }),
+                            headers : {
+                                'PRIVATE-TOKEN' : process.env.GITLAB_TOKEN,
+                                'Content-Type' : 'application/json'
+                            }
+                        },function(commentError, commentResponse, commentBody){
+                            if (commentError || commentResponse.statusCode != 200) {
+                                console.log('Error commenting on merge request: ' + commentBody);
+                            }
+                        });
                     });
                     /***********************************************************/
-
-
-                    request.post({
-                        url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
-                        body: JSON.stringify({
-                            note : messageGenerator(
-                                reviewers,
-                                buildMentionSentence,
-                                defaultMessageGenerator)
-                        }),
-                        headers : {
-                            'PRIVATE-TOKEN' : process.env.GITLAB_TOKEN,
-                            'Content-Type' : 'application/json'
-                        }
-                    },function(commentError, commentResponse, commentBody){
-                        if (commentError || commentResponse.statusCode != 200) {
-                            console.log('Error commenting on merge request: ' + commentBody);
-                        }
-                    });
                 });
             }
             return res.end();
