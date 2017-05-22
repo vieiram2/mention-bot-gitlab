@@ -109,12 +109,15 @@ app.post('/', function(req, res) {
                             console.log('body:', body_tmp);
 
                                 console.log("reviewers before ", reviewers);
+                            reviewers = [];
                             for(var i= 0; i < body_tmp.length; i++)
                             {
+                                reviewers.push(body_tmp[i].username);
                                 console.log("body useername ==>" ,body_tmp[i].username);
                             }
 
                         });
+                        console.log("reviewers after ", reviewers);
                         // var val = myModule.hello(); // val is "Hello"
                         //
                         // console.log("==> xxx ==> ", val);
