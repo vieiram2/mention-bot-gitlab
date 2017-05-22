@@ -105,8 +105,10 @@ app.post('/', function(req, res) {
                         var url = process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users?private_token='+ process.env.GITLAB_TOKEN ;
                         console.log("url ==> ", url);
                         request(url, function (error, response, body) {
-                           var body_tmp =  JSON.parse({body});
-                            console.log('body:', body_tmp); // Print the HTML for the Google homepage.
+                           var body_tmp =  JSON.parse(body);
+                            console.log('body:', body_tmp);
+
+                            
                             for(var i= 0; i < body_tmp.length; i++)
                             {
                                 console.log("body ==>",body_tmp[i]);
