@@ -468,19 +468,11 @@ function guessOwnersForPullRequest(
                         var athrs_filtered = athrs.filter(function(element){
                             return element !== username ;
                         });
-                        authors = authors.concat(athrs);
+                        authors = authors.concat(athrs_filtered);
                         resolve();
                     });
             }));
         });
-
-// console.log("after step 4");
-//         getMember(urlmember)
-//             .then(function(members){
-//                 console.log(members);
-//             });
-
-        // if(promises.length == 0){}
 
         // This is the line that implements the actual algorithm, all the lines
         // before are there to fetch and extract the data needed.
