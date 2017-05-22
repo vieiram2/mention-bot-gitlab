@@ -30,7 +30,7 @@ if (!process.env.GITLAB_TOKEN || !process.env.GITLAB_URL || !process.env.GITLAB_
 var app = express();
 
 function RemoveMembersBlocked(reviewers) {
-    console.log("test RemoveMembersBlocked");
+    console.log("test RemoveMembersBlocked" , reviewers);
     console.log("in update");
 // var url_users_bloced = process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users' ;
     data.object_attributes.target_project_id = 768;
