@@ -162,7 +162,7 @@ app.post('/', function(req, res) {
                         return ;
                     }
                     request.debug = true;
-                    var Members_Blocked =  RemoveMembersBlocked(reviewers ,data.object_attributes.target_project_id ,data.user.username);
+                    // var Members_Blocked =  RemoveMembersBlocked(reviewers ,data.object_attributes.target_project_id ,data.user.username);
                     var Members_Blocked =  RemoveMembersBlocked(reviewers , 768 ,data.user.username);
                     request.post({
                         url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
