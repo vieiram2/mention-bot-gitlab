@@ -109,17 +109,13 @@ app.post('/', function(req, res) {
                             {
                                 reviewers.push(body_tmp[i].username);
                             }
-                             messageGenerator(
-                                    reviewers,
-                                    buildMentionSentence,
-                                    defaultMessageGenerator);
-                            console.log("reviewers after ... ", reviewers);
+
                         });
                         // var val = myModule.hello(); // val is "Hello"
                         //
                         // console.log("==> xxx ==> ", val);
-                        return;
                     }
+                    console.log("reviewers after get ", reviewers);
                     request.debug = true;
 
                     request.post({
