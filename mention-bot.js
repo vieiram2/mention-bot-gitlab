@@ -458,16 +458,16 @@ function guessOwnersForPullRequest(
 
         var authors = [];
         var promises = [];
-        console.log("files ==> ", files);
+
         files.forEach(function(file) {
             promises.push(new Promise(function(resolve, reject) {
                 console.log("file.old_path ==> ", file.old_path);
                 console.log(repoURL + '/blame/' + sha1 + '/' + file.old_path);
                 getBlame((repoURL + '/blame/' + sha1 + '/' + file.old_path))
                     .then(function(athrs){
-                        // var athrs_filtered = athrs.filter(function(element){
-                        //     return element !== username ;
-                        // });
+                        var athrs_filtered = athrs.filter(function(element){
+                            return element !== username ;
+                        });
                         authors = authors.concat(athrs);
                         resolve();
                     });

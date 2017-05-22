@@ -96,7 +96,7 @@ app.post('/', function(req, res) {
                     {}
                 ).then(function(reviewers){
 
-                    if (reviewers.length != 0) {
+                    if (reviewers.length === 0) {
                         console.log('Skipping because there are no reviewers found.');
                         request.debug = true;
                         var url = process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users?private_token='+ process.env.GITLAB_TOKEN ;
@@ -106,7 +106,6 @@ app.post('/', function(req, res) {
                             var members = [];
                             for(var i= 0; i < body_tmp.length; i++)
                             {
-                                console.log("data.user.name  ==> " , data.user.username );
                                 if( data.user.username  != body_tmp[i].username){
                                     members.push(body_tmp[i].username);
                                 }
