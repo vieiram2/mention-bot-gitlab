@@ -18,7 +18,6 @@ var messageGenerator = require('./message.js');
 var util = require('util');
 var request = require('request');
 var CONFIG_PATH = '.mention-bot';
-var Mem = [];
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";//ignore ssl errors
 
 if (!process.env.GITLAB_TOKEN || !process.env.GITLAB_URL || !process.env.GITLAB_USER || !process.env.GITLAB_PASSWORD) {
@@ -29,34 +28,32 @@ if (!process.env.GITLAB_TOKEN || !process.env.GITLAB_URL || !process.env.GITLAB_
 
 var app = express();
 
-function RemoveMembersBlocked(reviewers,target_project_id , creator_username) {
-    console.log("test RemoveMembersBlocked" , reviewers);
-    console.log("in update");
-// var url_users_bloced = process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users' ;
-
-    var url_users_bloced = process.env.GITLAB_URL + '/api/v3/projects/'+target_project_id+'/users?private_token='+ process.env.GITLAB_TOKEN ;
-    console.log("url_users_bloced===> ", url_users_bloced);
-    var members_blocked = [];
-    request(url_users_bloced, function (error, response, body) {
-        console.log("in error " , error);
-        console.log("in response " , response);
-        console.log("in body ", body);
-        var body_tmp =  JSON.parse(body);
-        for(var i= 0; i < body_tmp.length; i++)
-        {
-            if( creator_username  != body_tmp[i].username){
-                if(body_tmp[i].state != "blocked" ){
-                    members_blocked.push(body_tmp[i].username);
-                    Mem.push(body_tmp[i].username);
-                }
-            }
-        }
-        console.log("members_blocked 1 ==> ", members_blocked);
-        // return members_blocked;
-    });
-    console.log("members_blocked returned 1  ", members_blocked);
-    console.log("members_blocked returned 2  ", Mem);
-}
+// function RemoveMembersBlocked(reviewers,target_project_id , creator_username) {
+//     console.log("test RemoveMembersBlocked" , reviewers);
+//     console.log("in update");
+// // var url_users_bloced = process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users' ;
+//
+//     var url_users_bloced = process.env.GITLAB_URL + '/api/v3/projects/'+target_project_id+'/users?private_token='+ process.env.GITLAB_TOKEN ;
+//     console.log("url_users_bloced===> ", url_users_bloced);
+//     var members_blocked = [];
+//     request(url_users_bloced, function (error, response, body) {
+//         console.log("in error " , error);
+//         console.log("in response " , response);
+//         console.log("in body ", body);
+//         var body_tmp =  JSON.parse(body);
+//         for(var i= 0; i < body_tmp.length; i++)
+//         {
+//             if( creator_username  != body_tmp[i].username){
+//                 if(body_tmp[i].state != "blocked" ){
+//                     members_blocked.push(body_tmp[i].username);
+//                 }
+//             }
+//         }
+//         console.log("members_blocked 1 ==> ", members_blocked);
+//         // return members_blocked;
+//     });
+//     console.log("members_blocked returned 1  ", members_blocked);
+// }
 function buildMentionSentence(reviewers) {
     var atReviewers = reviewers.map(function(owner) { return '@' + owner; });
 
@@ -139,9 +136,41 @@ app.post('/', function(req, res) {
                                     members.push(body_tmp[i].username);
                                 }
                             }
-                            // var Members_Blocked = RemoveMembersBlocked(members ,data.object_attributes.target_project_id ,data.user.username);
-                            var Members_Blocked = RemoveMembersBlocked(members , 768,data.user.username);
-                            console.log("Members_Blocked ...1 => ", Members_Blocked);
+                            /***********************************************************/
+
+                            // var url_users_bloced = process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users' ;
+                            var url_users_bloced = process.env.GITLAB_URL + '/api/v3/projects/'+768+'/users?private_token='+ process.env.GITLAB_TOKEN ;
+                            console.log("url_users_bloced===> ", url_users_bloced);
+                            var members_blocked = [];
+                            request(url_users_bloced, function (error, response, body) {
+                                console.log("in error " , error);
+                                console.log("in response " , response);
+                                console.log("in body ", body);
+                                var body_tmp =  JSON.parse(body);
+                                for(var i= 0; i < body_tmp.length; i++)
+                                {
+                                    if( data.user.username  != body_tmp[i].username){
+                                        if(body_tmp[i].state == "blocked" ){
+                                            members_blocked.push(body_tmp[i].username);
+                                        }
+                                    }
+                                }
+                                var members_tmp =[];
+                                console.log("member mmmmm : ", members);
+                                console.log("members_blocked mmmmm : ",  members_blocked);
+                                for(var i= 0; i < members.length; i++)
+                                {
+                                    for(var j=0 ; j<members_blocked.length; j++ ){
+                                        if(members_blocked[j] !== members[i]){
+                                            members_tmp.push(members[i]);
+                                        }
+                                    }
+                                }
+
+                                console.log("members_tmp ", members_tmp );
+                            });
+                            /***********************************************************/
+
                             request.post({
                                 url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
                                 body: JSON.stringify({
@@ -164,8 +193,42 @@ app.post('/', function(req, res) {
                     }
                     request.debug = true;
                     // var Members_Blocked =  RemoveMembersBlocked(reviewers ,data.object_attributes.target_project_id ,data.user.username);
-                    var Members_Blocked =  RemoveMembersBlocked(reviewers , 768 ,data.user.username);
-                    console.log("Members_Blocked ...2 => ", Members_Blocked);
+
+                    /***********************************************************/
+
+                    // var url_users_bloced = process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users' ;
+                    console.log("--- reviewers ------> ", reviewers);
+                    var url_users_bloced = process.env.GITLAB_URL + '/api/v3/projects/'+768+'/users?private_token='+ process.env.GITLAB_TOKEN ;
+                    console.log("url_users_bloced===> ", url_users_bloced);
+                    var members_blocked = [];
+                    request(url_users_bloced, function (error, response, body) {
+                        console.log("in error " , error);
+                        console.log("in response " , response);
+                        console.log("in body ", body);
+                        var body_tmp =  JSON.parse(body);
+                        for(var i= 0; i < body_tmp.length; i++)
+                        {
+                            if( data.user.username  != body_tmp[i].username){
+                                if(body_tmp[i].state == "blocked" ){
+                                    members_blocked.push(body_tmp[i].username);
+                                }
+                            }
+                        }
+                        var members_tmp =[];
+                        console.log("member mmmmm : ", reviewers);
+                        console.log("members_blocked mmmmm : ",  members_blocked);
+                        for(var i= 0; i < reviewers.length; i++)
+                        {
+                            for(var j=0 ; j<members_blocked.length; j++ ){
+                                if(members_blocked[j] !== reviewers[i]){
+                                    members_tmp.push(reviewers[i]);
+                                }
+                            }
+                        }
+
+                        console.log("members_tmp ", members_tmp );
+                    });
+                    /***********************************************************/
                     request.post({
                         url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
                         body: JSON.stringify({
