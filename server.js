@@ -64,7 +64,6 @@ app.post('/', function(req, res) {
     req.pipe(bl(function(err, body) {
         var data = {};
         try { data = JSON.parse(body.toString()); } catch (e) {}
-        console.log("data ==> ", data);
         if (data.object_attributes.state !== 'opened') {
             console.log(
                 'Skipping because action is ' + data.object_attributes.state + '.',
@@ -87,8 +86,6 @@ app.post('/', function(req, res) {
             var merge_data = {};
             try { merge_data = JSON.parse(body.toString()); } catch (e) {}
 
-            console.log("data.project.homepage ==> " , data.project.homepage);
-
             if(data.object_attributes.action != 'update'){
                 mentionBot.guessOwnersForPullRequest(
                     data.object_attributes.source.web_url,//repo url
@@ -103,17 +100,22 @@ app.post('/', function(req, res) {
                         console.log('Skipping because there are no reviewers found.');
                         request.debug = true;
                         var url = process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users?private_token='+ process.env.GITLAB_TOKEN ;
-                        console.log("url ==> ", url);
+
                         request(url, function (error, response, body) {
                            var body_tmp =  JSON.parse(body);
-                           console.log("reviewers before ", reviewers);
+                           console.log("reviewers before ... ", reviewers);
                             reviewers = [];
                             for(var i= 0; i < body_tmp.length; i++)
                             {
                                 reviewers.push(body_tmp[i].username);
-                                console.log("body useername ==>" ,body_tmp[i].username);
                             }
-                            console.log("reviewers after ", reviewers);
+                            JSON.stringify({
+                                note : messageGenerator(
+                                    reviewers,
+                                    buildMentionSentence,
+                                    defaultMessageGenerator)
+                            })
+                            console.log("reviewers after ... ", reviewers);
                         });
                         // var val = myModule.hello(); // val is "Hello"
                         //
