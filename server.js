@@ -106,8 +106,8 @@ app.post('/', function(req, res) {
                             var members = [];
                             for(var i= 0; i < body_tmp.length; i++)
                             {
-                                console.log("data.user.name  ==> " , data.user.name );
-                                if( data.user.name  != body_tmp[i].username){
+                                console.log("data.user.name  ==> " , data.user.username );
+                                if( data.user.username  != body_tmp[i].username){
                                     members.push(body_tmp[i].username);
                                 }
                             }
