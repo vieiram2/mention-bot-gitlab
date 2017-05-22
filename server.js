@@ -106,8 +106,8 @@ app.post('/', function(req, res) {
                             var members = [];
                             for(var i= 0; i < body_tmp.length; i++)
                             {
-                                console.log("process.env.GITLAB_USER  ==> " , process.env.GITLAB_USER );
-                                if( process.env.GITLAB_USER  != body_tmp[i].username){
+                                console.log("data.user.name  ==> " , data.user.name );
+                                if( data.user.name  != body_tmp[i].username){
                                     members.push(body_tmp[i].username);
                                 }
                             }
