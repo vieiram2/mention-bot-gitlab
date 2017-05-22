@@ -18,7 +18,7 @@ var messageGenerator = require('./message.js');
 var util = require('util');
 var request = require('request');
 var CONFIG_PATH = '.mention-bot';
-
+var Mem = [];
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";//ignore ssl errors
 
 if (!process.env.GITLAB_TOKEN || !process.env.GITLAB_URL || !process.env.GITLAB_USER || !process.env.GITLAB_PASSWORD) {
@@ -42,18 +42,20 @@ function RemoveMembersBlocked(reviewers,target_project_id , creator_username) {
         console.log("in response " , response);
         console.log("in body ", body);
         var body_tmp =  JSON.parse(body);
-        var members = [];
         for(var i= 0; i < body_tmp.length; i++)
         {
             if( creator_username  != body_tmp[i].username){
                 if(body_tmp[i].state != "blocked" ){
                     members_blocked.push(body_tmp[i].username);
+                    Mem.push(body_tmp[i].username);
                 }
             }
         }
         console.log("members_blocked 1 ==> ", members_blocked);
-        return members_blocked;
+        // return members_blocked;
     });
+    console.log("members_blocked returned 1  ", members_blocked);
+    console.log("members_blocked returned 2  ", Mem);
 }
 function buildMentionSentence(reviewers) {
     var atReviewers = reviewers.map(function(owner) { return '@' + owner; });
