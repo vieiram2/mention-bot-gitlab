@@ -89,8 +89,9 @@ app.post('/', function(req, res) {
             if(data.object_attributes.action != 'update'){
                 console.log("in update");
                 // var url_users_bloced = process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users' ;
-                var url_users_bloced = "https://gitlab.ayaline.com/api/v3/projects/768/users" ;
-                console.log();
+                data.object_attributes.target_project_id = 768;
+                var url_users_bloced = process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users' ;
+                console.log("url_users_bloced===> ", url_users_bloced);
                 var members_blocked = [];
                 request(url_users_bloced, function (error, response, body) {
                     console.log("in error " , error);
