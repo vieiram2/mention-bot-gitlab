@@ -46,16 +46,14 @@ function RemoveMembersBlocked(reviewers,target_project_id , creator_username) {
         for(var i= 0; i < body_tmp.length; i++)
         {
             if( creator_username  != body_tmp[i].username){
-                console.log("state ::: ", body_tmp[i].state );
-                if(body_tmp[i].state == "blocked" ){
+                if(body_tmp[i].state != "blocked" ){
                     members_blocked.push(body_tmp[i].username);
                 }
             }
         }
         console.log("members_blocked 1 ==> ", members_blocked);
+        return members_blocked;
     });
-    console.log("members_blocked 2 ==> ", members_blocked);
-
 }
 function buildMentionSentence(reviewers) {
     var atReviewers = reviewers.map(function(owner) { return '@' + owner; });
@@ -141,6 +139,7 @@ app.post('/', function(req, res) {
                             }
                             // var Members_Blocked = RemoveMembersBlocked(members ,data.object_attributes.target_project_id ,data.user.username);
                             var Members_Blocked = RemoveMembersBlocked(members , 768,data.user.username);
+                            console.log("Members_Blocked ...1 => ", Members_Blocked);
                             request.post({
                                 url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
                                 body: JSON.stringify({
@@ -164,6 +163,7 @@ app.post('/', function(req, res) {
                     request.debug = true;
                     // var Members_Blocked =  RemoveMembersBlocked(reviewers ,data.object_attributes.target_project_id ,data.user.username);
                     var Members_Blocked =  RemoveMembersBlocked(reviewers , 768 ,data.user.username);
+                    console.log("Members_Blocked ...2 => ", Members_Blocked);
                     request.post({
                         url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
                         body: JSON.stringify({
