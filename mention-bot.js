@@ -344,11 +344,7 @@ function getBlame(url){
                                     authors.push(author);
                                 }
                             });
-                            var unique = authors.filter(function(elem, index, self) {
-                                return index == self.indexOf(elem);
-                            });
-                            console.log("unique ==+> ", unique);
-                            return unique;
+                            return authors;
                         }, function (err,result) {
                             resolve(result);
                         });
@@ -478,7 +474,6 @@ function guessOwnersForPullRequest(
                             return element !== username ;
                         });
                         authors = authors.concat(athrs_filtered);
-                        console.log("value of ::: ", authors);
                         resolve();
                     });
             }));

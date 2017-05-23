@@ -211,6 +211,12 @@ app.post('/', function(req, res) {
                                 }
                             }
                         }
+                            console.log("debug members_tmp" , members_tmp);
+                        // var unique = authors.filter(function(elem, index, self) {
+                        //     return index == self.indexOf(elem);
+                        // });
+                        // console.log("unique ==+> ", unique);
+
                         reviewers = members_tmp ;
                         request.post({
                             url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
