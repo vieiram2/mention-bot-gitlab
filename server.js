@@ -176,7 +176,7 @@ app.post('/', function(req, res) {
 
                     var url_users_bloced = process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users?private_token='+ process.env.GITLAB_TOKEN ;
                     // var url_users_bloced = process.env.GITLAB_URL + '/api/v3/projects/'+768+'/users?private_token='+ process.env.GITLAB_TOKEN ;
-                    // console.log("url_users_bloced===> ", url_users_bloced);
+                    console.log("url_users_bloced===> ", url_users_bloced);
                     var members_blocked = [];
                     request(url_users_bloced, function (error, response, body) {
                         var body_tmp =  JSON.parse(body);
