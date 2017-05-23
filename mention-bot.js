@@ -334,6 +334,9 @@ function getBlame(url){
                                         var res_tmp = author.substring(7, author.length) ,
                                             index = res_tmp.indexOf("@") ,
                                             author = res_tmp.substring(0, index);
+                                        if(author != ''){
+                                            author = $(this).text();
+                                        }
                                     }else{
                                         author =  author.substring(1, author.length);
                                     }
