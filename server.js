@@ -134,7 +134,9 @@ app.post('/', function(req, res) {
                                         }
                                     }
                                 }
-                                members = members_tmp ;
+                                if(members_tmp.length>0){
+                                    members = members_tmp ;
+                                }
                                 if(members.length > 2){
                                     var rand1 = members[Math.floor(Math.random() * members.length)] ,
                                         rand2 = members[Math.floor(Math.random() * members.length)];
@@ -198,8 +200,9 @@ app.post('/', function(req, res) {
                                 }
                             }
                         }
-                        reviewers = members_tmp ;
-
+                        if(members_tmp.length>0){
+                            reviewers = members_tmp ;
+                        }
                         if(reviewers.length > 2){
                             var rand1 = reviewers[Math.floor(Math.random() * reviewers.length)] ,
                                 rand2 = reviewers[Math.floor(Math.random() * reviewers.length)];
