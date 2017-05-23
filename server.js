@@ -211,7 +211,10 @@ app.post('/', function(req, res) {
                                 }
                             }
                         }
-                            console.log("debug members_tmp" , members_tmp);
+                        var unique = members_tmp.filter(function(elem, index, self) {
+                            return index == self.indexOf(elem);
+                        })
+                            console.log("debug members_tmp" , unique);
                         return;
                         // var unique = authors.filter(function(elem, index, self) {
                         //     return index == self.indexOf(elem);
