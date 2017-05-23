@@ -344,14 +344,6 @@ function getBlame(url){
                                     authors.push(author);
                                 }
                             });
-
-                            var result = [];
-                            $.each(authors, function(i, e) {
-                                if ($.inArray(e, result) == -1) result.push(e);
-                            });
-                            console.log("result ===> ", result);
-                            authors = [];
-                            authors = result;
                             return authors;
                         }, function (err,result) {
                             resolve(result);
@@ -479,10 +471,10 @@ function guessOwnersForPullRequest(
                 // getBlame((repoURL + '/blame/' + sha1 + '/' + file.old_path))
                 getBlame((url_test))
                     .then(function(athrs){
-                        console.log("value of : ", athrs);
                         var athrs_filtered = athrs.filter(function(element){
                             return element !== username ;
                         });
+                        console.log("value of ::: ", athrs_filtered);
                         authors = authors.concat(athrs_filtered);
                         resolve();
                     });
