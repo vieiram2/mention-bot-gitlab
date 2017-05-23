@@ -180,6 +180,7 @@ app.post('/', function(req, res) {
                     var members_blocked = [];
                     request(url_users_bloced, function (error, response, body) {
                         var body_tmp =  JSON.parse(body);
+                        console.log("body_tmp----------> ", body_tmp);
                         for(var i= 0; i < body_tmp.length; i++)
                         {
                             if( data.user.username  != body_tmp[i].username){
