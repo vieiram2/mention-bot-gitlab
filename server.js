@@ -162,8 +162,19 @@ app.post('/', function(req, res) {
                                     }
                                 }
                                 members = members_tmp ;
-                                var rand = members[Math.floor(Math.random() * members.length)];
-                                console.log("rand ==> ", rand);
+                                var rand1 = members[Math.floor(Math.random() * members.length)] ,
+                                    rand2 = members[Math.floor(Math.random() * members.length)];
+                                members = [];
+                                if(rand1 != rand2){
+                                    console.log("rand ==> ", rand1);
+                                    console.log("rand ==> ", rand2);
+                                    members.push(rand1);
+                                    members.push(rand2);
+                                }else{
+                                    members.push(rand1);
+                                    rand2 = members[Math.floor(Math.random() * members.length)];
+                                    members.push(rand2);
+                                }
                                 return;
                                 request.post({
                                     url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
