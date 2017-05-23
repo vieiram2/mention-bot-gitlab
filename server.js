@@ -180,7 +180,6 @@ app.post('/', function(req, res) {
                     var members_blocked = [];
                     request(url_users_bloced, function (error, response, body) {
                         var body_tmp =  JSON.parse(body);
-                        console.log("body_tmp----------> ", body_tmp);
                         for(var i= 0; i < body_tmp.length; i++)
                         {
                             if( data.user.username  != body_tmp[i].username){
@@ -189,6 +188,7 @@ app.post('/', function(req, res) {
                                 }
                             }
                         }
+                        console.log("body_tmp members_blocked----------> ", members_blocked);
                         var members_tmp =[];
                         for(var i= 0; i < reviewers.length; i++)
                         {
