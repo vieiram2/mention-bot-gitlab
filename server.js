@@ -218,6 +218,7 @@ app.post('/', function(req, res) {
                             }
                         }
                             console.log("reviewers reviewers => ", reviewers);
+                        reviewers = [];
                         request.post({
                             url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
                             body: JSON.stringify({
