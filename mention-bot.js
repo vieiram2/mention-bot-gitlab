@@ -342,20 +342,16 @@ function getBlame(url){
                                         author =  author.substring(1, author.length);
                                     }
                                     authors.push(author);
-                                    /*********** delete double element **********************/
-                                    var i, j, len = authors.length, out = [], obj = {};
-                                    for (i = 0; i < len; i++) {
-                                        obj[authors[i]] = 0;
-                                    }
-                                    for (j in obj) {
-                                        out.push(j);
-                                    }
-                                    authors = out;
-                                    console.log("steps authors " , authors);
-                                    /*********** end delete double element **********************/
                                 }
                             });
 
+                            var result = [];
+                            $.each(authors, function(i, e) {
+                                if ($.inArray(e, result) == -1) result.push(e);
+                            });
+                            console.log("result ===> ", result);
+                            authors = [];
+                            authors = result;
                             return authors;
                         }, function (err,result) {
                             resolve(result);
