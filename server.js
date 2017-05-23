@@ -189,41 +189,29 @@ app.post('/', function(req, res) {
                     /***********************************************************/
 
                     // var url_users_bloced = process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users' ;
-                    var url_users_bloced = process.env.GITLAB_URL + '/api/v3/projects/'+649+'/users?private_token='+ process.env.GITLAB_TOKEN ; // test if array has blocked member
-
+                    var url_users_bloced = process.env.GITLAB_URL + '/api/v3/projects/'+768+'/users?private_token='+ process.env.GITLAB_TOKEN ;
+                    console.log("url_users_bloced===> ", url_users_bloced);
                     var members_blocked = [];
                     request(url_users_bloced, function (error, response, body) {
                         var body_tmp =  JSON.parse(body);
                         for(var i= 0; i < body_tmp.length; i++)
                         {
                             if( data.user.username  != body_tmp[i].username){
-                                console.log("state => ", body_tmp[i].state );
                                 if(body_tmp[i].state == "blocked" ){
                                     members_blocked.push(body_tmp[i].username);
                                 }
                             }
                         }
-                        console.log("members_blocked ==> ", members_blocked);
-
-                        /******************* Delete duplicate username in array ******************/
-                        console.log("debug members_tmp" );
-                        /********************* Delete blocked personnes **************************/
-                        console.log("reviewers before 2 ", reviewers);
-
                         var members_tmp =[];
                         for(var i= 0; i < reviewers.length; i++)
                         {
                             for(var j=0 ; j<members_blocked.length; j++ ){
-                                console.log("members_blocked[j] ==> ", members_blocked[j]);
-                                console.log("reviewers[i] ==> ", reviewers[i]);
                                 if(members_blocked[j] !== reviewers[i]){
                                     members_tmp.push(reviewers[i]);
                                 }
                             }
                         }
-                        console.log("members_tmp  before 2 ", members_tmp);
                         reviewers = members_tmp ;
-                        return;
                         request.post({
                             url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
                             body: JSON.stringify({
