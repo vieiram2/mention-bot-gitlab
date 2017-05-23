@@ -162,21 +162,20 @@ app.post('/', function(req, res) {
                                     }
                                 }
                                 members = members_tmp ;
-                                var rand1 = members[Math.floor(Math.random() * members.length)] ,
-                                    rand2 = members[Math.floor(Math.random() * members.length)];
-                                members = [];
-                                if(rand1 != rand2){
-                                    console.log("rand ==> ", rand1);
-                                    console.log("rand ==> ", rand2);
-                                    members.push(rand1);
-                                    members.push(rand2);
-                                }else{
-                                    members.push(rand1);
-                                    rand2 = members[Math.floor(Math.random() * members.length)];
-                                    members.push(rand2);
+                                if(members.length > 2){
+                                    var rand1 = members[Math.floor(Math.random() * members.length)] ,
+                                        rand2 = members[Math.floor(Math.random() * members.length)];
+                                    members = [];
+                                    if(rand1 != rand2){
+                                        members.push(rand1);
+                                        members.push(rand2);
+                                    }else{
+                                        members.push(rand1);
+                                        rand2 = members[Math.floor(Math.random() * members.length)];
+                                        members.push(rand2);
+                                    }
                                 }
                                 console.log("members ==> ", members);
-                                return;
                                 request.post({
                                     url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
                                     body: JSON.stringify({
@@ -227,6 +226,21 @@ app.post('/', function(req, res) {
                             }
                         }
                         reviewers = members_tmp ;
+
+                        if(reviewers.length > 2){
+                            var rand1 = reviewers[Math.floor(Math.random() * reviewers.length)] ,
+                                rand2 = reviewers[Math.floor(Math.random() * reviewers.length)];
+                            reviewers = [];
+                            if(rand1 != rand2){
+                                reviewers.push(rand1);
+                                reviewers.push(rand2);
+                            }else{
+                                reviewers.push(rand1);
+                                rand2 = reviewers[Math.floor(Math.random() * reviewers.length)];
+                                reviewers.push(rand2);
+                            }
+                        }
+
                         request.post({
                             url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
                             body: JSON.stringify({
