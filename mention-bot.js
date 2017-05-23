@@ -474,10 +474,11 @@ function guessOwnersForPullRequest(
                             return element !== username ;
                         });
                         authors = authors.concat(athrs_filtered);
-                        var unique = authors.filter(function(elem, index, self) {
+                        var unique_auths = authors.filter(function(elem, index, self) {
                             return index == self.indexOf(elem);
                         })
-                        console.log("mention bot ",unique );
+                        authors  = unique_auths ;
+                        console.log("mention bot ",unique_auths );
                         resolve();
                     });
             }));
