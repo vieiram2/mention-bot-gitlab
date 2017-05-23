@@ -463,7 +463,7 @@ function guessOwnersForPullRequest(
         files.forEach(function(file) {
             promises.push(new Promise(function(resolve, reject) {
                 console.log("file.old_path ==> ", file.old_path);
-                var url_test = "https://gitlab.ayaline.com/managerexpo/dev/blame/mantis_591/app/Resources/KnpMenuBundle/views/Menu/knp_menu.html.twig";
+                var url_test = "https://gitlab.ayaline.com/collectivites/chateaugiron/blame/master/src/Ayaline/Bundle/ContextualiteBundle/Resources/views/blocs/blocs_bottom.html.twig";
                 console.log("url_test ==> " , url_test);
                 // getBlame((repoURL + '/blame/' + sha1 + '/' + file.old_path))
                 getBlame((url_test))
