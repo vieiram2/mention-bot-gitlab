@@ -204,29 +204,27 @@ app.post('/', function(req, res) {
                             }
                         }
                         console.log("members_blocked ==> ", members_blocked);
-                        var unique_rvw = [];
+
                         /******************* Delete duplicate username in array ******************/
-                        reviewers.filter(function(elem, index, self) {
-                             unique_rvw == self.indexOf(elem);
-                        })
-                        console.log("debug members_tmp" , unique_rvw);
+                        console.log("debug members_tmp" );
                         /********************* Delete blocked personnes **************************/
                         var members_tmp =[];
-                        for(var i= 0; i < unique_rvw.length; i++)
+                        for(var i= 0; i < reviewers.length; i++)
                         {
                             for(var j=0 ; j<members_blocked.length; j++ ){
-                                if(members_blocked[j] !== unique_rvw[i]){
-                                    members_tmp.push(unique_rvw[i]);
+                                if(members_blocked[j] !== reviewers[i]){
+                                    members_tmp.push(reviewers[i]);
                                 }
                             }
                         }
                         console.log("members_tmp ==> ", members_tmp);
-                        unique_rvw = members_tmp ;
+                        reviewers = members_tmp ;
+                        return;
                         request.post({
                             url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
                             body: JSON.stringify({
                                 note : messageGenerator(
-                                    unique_rvw,
+                                    reviewers,
                                     buildMentionSentence,
                                     defaultMessageGenerator)
                             }),
