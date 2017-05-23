@@ -13,6 +13,7 @@
 
 module.exports = function(
   reviewers: Array<string>,
+  creator: string,
   mentionSentenceBuilder: (reviewers: Array<string>) => string,
   defaultMessageGenerator: (reviewers: Array<string>) => string
 ): string {
@@ -20,8 +21,12 @@ module.exports = function(
   // This file is a place where you can change the way the message the bot
   // uses to comment. For example:
   //
-    console.log("reviewers message ", reviewers);
-     return 'Merci de valider cette MR ' + mentionSentenceBuilder(reviewers);
+    if(reviewers.length>0){
+        return 'Merci de valider cette MR ' + mentionSentenceBuilder(reviewers);
+    }else{
+        return '@'+creator+' : Personne ne peut valider cette MR';
+    }
+
   //
   // will print
   //

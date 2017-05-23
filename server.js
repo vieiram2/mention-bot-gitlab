@@ -155,6 +155,7 @@ app.post('/', function(req, res) {
                                     body: JSON.stringify({
                                         note : messageGenerator(
                                             members,
+                                            data.user.username,
                                             buildMentionSentence,
                                             defaultMessageGenerator)
                                     }),
@@ -222,6 +223,7 @@ app.post('/', function(req, res) {
                             body: JSON.stringify({
                                 note : messageGenerator(
                                     reviewers,
+                                    data.user.username,
                                     buildMentionSentence,
                                     defaultMessageGenerator)
                             }),
