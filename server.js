@@ -208,6 +208,8 @@ app.post('/', function(req, res) {
                         /******************* Delete duplicate username in array ******************/
                         console.log("debug members_tmp" );
                         /********************* Delete blocked personnes **************************/
+                        console.log("reviewers before 2 ", reviewers);
+
                         var members_tmp =[];
                         for(var i= 0; i < reviewers.length; i++)
                         {
@@ -217,7 +219,7 @@ app.post('/', function(req, res) {
                                 }
                             }
                         }
-                        console.log("members_tmp ==> ", members_tmp);
+                        console.log("members_tmp  before 2 ", members_tmp);
                         reviewers = members_tmp ;
                         return;
                         request.post({
