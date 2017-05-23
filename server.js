@@ -214,6 +214,8 @@ app.post('/', function(req, res) {
                         for(var i= 0; i < reviewers.length; i++)
                         {
                             for(var j=0 ; j<members_blocked.length; j++ ){
+                                console.log("members_blocked[j] ==> ", members_blocked[j]);
+                                console.log("reviewers[i] ==> ", reviewers[i]);
                                 if(members_blocked[j] !== reviewers[i]){
                                     members_tmp.push(reviewers[i]);
                                 }
