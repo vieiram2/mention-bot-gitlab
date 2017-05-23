@@ -197,36 +197,36 @@ app.post('/', function(req, res) {
                         for(var i= 0; i < body_tmp.length; i++)
                         {
                             if( data.user.username  != body_tmp[i].username){
+                                console.log("state => ", body_tmp[i].state );
                                 if(body_tmp[i].state == "blocked" ){
                                     members_blocked.push(body_tmp[i].username);
                                 }
                             }
                         }
+                        console.log("members_blocked ==> ", members_blocked);
+                        var unique_rvw = [];
+                        /******************* Delete duplicate username in array ******************/
+                        reviewers.filter(function(elem, index, self) {
+                             unique_rvw == self.indexOf(elem);
+                        })
+                        console.log("debug members_tmp" , unique_rvw);
+                        /********************* Delete blocked personnes **************************/
                         var members_tmp =[];
-                        for(var i= 0; i < reviewers.length; i++)
+                        for(var i= 0; i < unique_rvw.length; i++)
                         {
                             for(var j=0 ; j<members_blocked.length; j++ ){
-                                if(members_blocked[j] !== reviewers[i]){
-                                    members_tmp.push(reviewers[i]);
+                                if(members_blocked[j] !== unique_rvw[i]){
+                                    members_tmp.push(unique_rvw[i]);
                                 }
                             }
                         }
-                        var unique = members_tmp.filter(function(elem, index, self) {
-                            return index == self.indexOf(elem);
-                        })
-                            console.log("debug members_tmp" , unique);
-                        return;
-                        // var unique = authors.filter(function(elem, index, self) {
-                        //     return index == self.indexOf(elem);
-                        // });
-                        // console.log("unique ==+> ", unique);
-
-                        reviewers = members_tmp ;
+                        console.log("members_tmp ==> ", members_tmp);
+                        unique_rvw = members_tmp ;
                         request.post({
                             url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
                             body: JSON.stringify({
                                 note : messageGenerator(
-                                    reviewers,
+                                    unique_rvw,
                                     buildMentionSentence,
                                     defaultMessageGenerator)
                             }),
