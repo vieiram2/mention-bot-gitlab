@@ -344,7 +344,11 @@ function getBlame(url){
                                     authors.push(author);
                                 }
                             });
-                            return authors;
+                            var unique = authors.filter(function(elem, index, self) {
+                                return index == self.indexOf(elem);
+                            });
+                            console.log("unique ==+> ", unique);
+                            return unique;
                         }, function (err,result) {
                             resolve(result);
                         });
@@ -465,7 +469,6 @@ function guessOwnersForPullRequest(
 
         files.forEach(function(file) {
             promises.push(new Promise(function(resolve, reject) {
-                console.log("file.old_path ==> ", file.old_path);
                 var url_test = "https://gitlab.ayaline.com/collectivites/chateaugiron/blame/master/src/Ayaline/Bundle/ContextualiteBundle/Resources/views/blocs/blocs_bottom.html.twig";
                 console.log("url_test ==> " , url_test);
                 // getBlame((repoURL + '/blame/' + sha1 + '/' + file.old_path))
@@ -474,8 +477,8 @@ function guessOwnersForPullRequest(
                         var athrs_filtered = athrs.filter(function(element){
                             return element !== username ;
                         });
-                        console.log("value of ::: ", athrs_filtered);
                         authors = authors.concat(athrs_filtered);
+                        console.log("value of ::: ", authors);
                         resolve();
                     });
             }));
