@@ -34,16 +34,6 @@ type FileInfo = {
 function startsWith(str, start) {
     return str.substr(0, start.length) === start;
 }
-function cleanArray(array) {
-    var i, j, len = array.length, out = [], obj = {};
-    for (i = 0; i < len; i++) {
-        obj[array[i]] = 0;
-    }
-    for (j in obj) {
-        out.push(j);
-    }
-    return out;
-}
 
 function parseDiffFile(lines: Array<string>): FileInfo {
     var deletedLines = [];
@@ -351,8 +341,17 @@ function getBlame(url){
                                         author =  author.substring(1, author.length);
                                     }
                                     authors.push(author);
-                                    authors = cleanArray(authors);
+                                    /*********** delete double element **********************/
+                                    var i, j, len = authors.length, out = [], obj = {};
+                                    for (i = 0; i < len; i++) {
+                                        obj[authors[i]] = 0;
+                                    }
+                                    for (j in obj) {
+                                        out.push(j);
+                                    }
+                                    authors = out;
                                     console.log("steps authors " , authors);
+                                    /*********** end delete double element **********************/
                                 }
                             });
 
