@@ -175,6 +175,7 @@ app.post('/', function(req, res) {
                                     rand2 = members[Math.floor(Math.random() * members.length)];
                                     members.push(rand2);
                                 }
+                                console.log("members ==> ", members);
                                 return;
                                 request.post({
                                     url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
