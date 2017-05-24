@@ -244,7 +244,7 @@ app.post('/', function(req, res) {
                                         }
 
                                         if(Members_group.length>0){
-                                            reviewers = members_tmp ;
+                                            reviewers = Members_group ;
                                         }
 
                                         if(reviewers.length > 2){
@@ -260,7 +260,7 @@ app.post('/', function(req, res) {
                                                 reviewers.push(rand2);
                                             }
                                         }
-                                        console.log("Members_group ==>" ,reviewers);
+                                        console.log("Members_group 2==>" ,reviewers);
                                     });
                                 }
                             });
