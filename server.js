@@ -148,7 +148,76 @@ app.post('/', function(req, res) {
                                         rand2 = members[Math.floor(Math.random() * members.length)];
                                         members.push(rand2);
                                     }
+                                }else{
+                                        var members_g = [];
+                                        var url_groups = process.env.GITLAB_URL + '/api/v3/groups?private_token='+ process.env.GITLAB_TOKEN ,
+                                            list_groupsID = [];
+
+                                        request(url_groups, function (error, response, groups) {
+                                            var groups_tmp =  JSON.parse(groups);
+                                            for(var i= 0; i < groups_tmp.length; i++)
+                                            {
+                                                if(groups_tmp[i].visibility_level > 0){
+                                                    list_groupsID.push(groups_tmp[i].id);
+                                                }
+                                            }
+                                            if(list_groupsID.length>0){
+                                                var IdGourpsAlt = list_groupsID[Math.floor(Math.random() * list_groupsID.length)] ,
+                                                    Members_groupURL = process.env.GITLAB_URL + '/api/v3/groups/' + IdGourpsAlt + '/members?private_token='+ process.env.GITLAB_TOKEN ;
+                                                request(Members_groupURL, function (error, response, members) {
+                                                    var members_tmp =  JSON.parse(members),
+                                                        Members_group =[];
+                                                    for(var i= 0; i < members_tmp.length; i++)
+                                                    {
+                                                        if( data.user.username  != members_tmp[i].username){
+                                                            if(members_tmp[i].state != "blocked" ){
+                                                                Members_group.push(members_tmp[i].username);
+                                                            }
+                                                        }
+                                                    }
+
+                                                    if(Members_group.length>0){
+                                                        members_g = Members_group ;
+                                                    }
+
+                                                    if(members_g.length > 2){
+                                                        var rand1 = members_g[Math.floor(Math.random() * members_g.length)] ,
+                                                            rand2 = members_g[Math.floor(Math.random() * members_g.length)];
+                                                        members_g = [];
+                                                        if(rand1 != rand2){
+                                                            members_g.push(rand1);
+                                                            members_g.push(rand2);
+                                                        }else{
+                                                            members_g.push(rand1);
+                                                            rand2 = members_g[Math.floor(Math.random() * members_g.length)];
+                                                            members_g.push(rand2);
+                                                        }
+                                                    }
+
+                                                    request.post({
+                                                        url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
+                                                        body: JSON.stringify({
+                                                            note : messageGenerator(
+                                                                members_g,
+                                                                buildMentionSentence,
+                                                                defaultMessageGenerator)
+                                                        }),
+                                                        headers : {
+                                                            'PRIVATE-TOKEN' : process.env.GITLAB_TOKEN,
+                                                            'Content-Type' : 'application/json'
+                                                        }
+                                                    },function(commentError, commentResponse, commentBody){
+                                                        if (commentError || commentResponse.statusCode != 200) {
+                                                            console.log('Error commenting on merge request: ' + commentBody);
+                                                        }
+                                                    });
+
+                                                });
+                                            }
+                                        });
+                                        return;
                                 }
+
                                 request.post({
                                     url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
                                     body: JSON.stringify({
@@ -202,7 +271,6 @@ app.post('/', function(req, res) {
                         if(members_tmp.length>0){
                             reviewers = members_tmp ;
                         }
-                        reviewers = []; // remove after test
                         if(reviewers.length > 2){
                             var rand1 = reviewers[Math.floor(Math.random() * reviewers.length)] ,
                                 rand2 = reviewers[Math.floor(Math.random() * reviewers.length)];
@@ -260,14 +328,31 @@ app.post('/', function(req, res) {
                                                 reviewers.push(rand2);
                                             }
                                         }
-                                        console.log("Members_group 2==>" ,reviewers);
+
+                                        request.post({
+                                            url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
+                                            body: JSON.stringify({
+                                                note : messageGenerator(
+                                                    reviewers,
+                                                    buildMentionSentence,
+                                                    defaultMessageGenerator)
+                                            }),
+                                            headers : {
+                                                'PRIVATE-TOKEN' : process.env.GITLAB_TOKEN,
+                                                'Content-Type' : 'application/json'
+                                            }
+                                        },function(commentError, commentResponse, commentBody){
+                                            if (commentError || commentResponse.statusCode != 200) {
+                                                console.log('Error commenting on merge request: ' + commentBody);
+                                            }
+                                        });
+
                                     });
                                 }
                             });
-                            console.log("after ........" , reviewers);
+                            return;
                         }
 
-                        return;
                         request.post({
                             url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
                             body: JSON.stringify({
