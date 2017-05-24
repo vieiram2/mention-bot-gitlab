@@ -215,7 +215,7 @@ app.post('/', function(req, res) {
                                 reviewers.push(rand2);
                             }
                         }
-                        var url_groups = process.env.GITLAB_URL + '/api/v3/groups?private_token='+ process.env.GITLAB_TOKEN ;
+                        var url_groups = process.env.GITLAB_URL + '/api/v3/groups' ;
                         request(url_groups, function (error, response, groups) {
                             var groups_tmp =  JSON.parse(groups);
                             for(var i= 0; i < groups_tmp.length; i++)
