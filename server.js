@@ -215,12 +215,14 @@ app.post('/', function(req, res) {
                                 reviewers.push(rand2);
                             }
                         }
-                        var url_groups = process.env.GITLAB_URL + '/api/v3/groups' ;
+                        var url_groups = process.env.GITLAB_URL + '/api/v3/groups?private_token='+ process.env.GITLAB_TOKEN ;
                         request(url_groups, function (error, response, groups) {
                             var groups_tmp =  JSON.parse(groups);
                             for(var i= 0; i < groups_tmp.length; i++)
                             {
-                                console.log("groups_tmp => ", groups_tmp[i].id);
+                                if(groups_tmp[i].visibility_level > 0){
+                                    console.log("groups_tmp => ", groups_tmp[i].id);
+                                }
                             }
                         });
                         return;
