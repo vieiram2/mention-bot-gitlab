@@ -215,14 +215,33 @@ app.post('/', function(req, res) {
                                 reviewers.push(rand2);
                             }
                         }
-                        var url_groups = process.env.GITLAB_URL + '/api/v3/groups?private_token='+ process.env.GITLAB_TOKEN ;
+                        var url_groups = process.env.GITLAB_URL + '/api/v3/groups?private_token='+ process.env.GITLAB_TOKEN ,
+                            list_groupsID = [];
+
                         request(url_groups, function (error, response, groups) {
                             var groups_tmp =  JSON.parse(groups);
                             for(var i= 0; i < groups_tmp.length; i++)
                             {
                                 if(groups_tmp[i].visibility_level > 0){
-                                    console.log("groups_tmp => ", groups_tmp[i].id);
+                                    list_groupsID.push(groups_tmp[i].id);
                                 }
+                            }
+                            if(list_groupsID.length>0){
+                                var IdGourpsAlt = list_groupsID[Math.floor(Math.random() * list_groupsID.length)] ,
+                                Members_groupURL = process.env.GITLAB_URL + '/api/v3/groups/' + IdGourpsAlt + '/members?private_token='+ process.env.GITLAB_TOKEN ;
+                                request(Members_groupURL, function (error, response, members) {
+                                    var members_tmp =  JSON.parse(members),
+                                        Members_group =[];
+                                    for(var i= 0; i < members_tmp.length; i++)
+                                    {
+                                        if( data.user.username  != members_tmp[i].username){
+                                            if(members_tmp[i].state != "blocked" ){
+                                                Members_group.push(members_tmp[i].username);
+                                            }
+                                        }
+                                    }
+                                        console.log("Members_group ==>" ,Members_group);
+                                });
                             }
                         });
                         return;
