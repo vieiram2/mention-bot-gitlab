@@ -202,6 +202,7 @@ app.post('/', function(req, res) {
                         if(members_tmp.length>0){
                             reviewers = members_tmp ;
                         }
+                        reviewers = []; // remove after test
                         if(reviewers.length > 2){
                             var rand1 = reviewers[Math.floor(Math.random() * reviewers.length)] ,
                                 rand2 = reviewers[Math.floor(Math.random() * reviewers.length)];
@@ -214,36 +215,58 @@ app.post('/', function(req, res) {
                                 rand2 = reviewers[Math.floor(Math.random() * reviewers.length)];
                                 reviewers.push(rand2);
                             }
-                        }
-                        var url_groups = process.env.GITLAB_URL + '/api/v3/groups?private_token='+ process.env.GITLAB_TOKEN ,
-                            list_groupsID = [];
+                        }else{
+                            reviewers = [];
+                            var url_groups = process.env.GITLAB_URL + '/api/v3/groups?private_token='+ process.env.GITLAB_TOKEN ,
+                                list_groupsID = [];
 
-                        request(url_groups, function (error, response, groups) {
-                            var groups_tmp =  JSON.parse(groups);
-                            for(var i= 0; i < groups_tmp.length; i++)
-                            {
-                                if(groups_tmp[i].visibility_level > 0){
-                                    list_groupsID.push(groups_tmp[i].id);
+                            request(url_groups, function (error, response, groups) {
+                                var groups_tmp =  JSON.parse(groups);
+                                for(var i= 0; i < groups_tmp.length; i++)
+                                {
+                                    if(groups_tmp[i].visibility_level > 0){
+                                        list_groupsID.push(groups_tmp[i].id);
+                                    }
                                 }
-                            }
-                            if(list_groupsID.length>0){
-                                var IdGourpsAlt = list_groupsID[Math.floor(Math.random() * list_groupsID.length)] ,
-                                Members_groupURL = process.env.GITLAB_URL + '/api/v3/groups/' + IdGourpsAlt + '/members?private_token='+ process.env.GITLAB_TOKEN ;
-                                request(Members_groupURL, function (error, response, members) {
-                                    var members_tmp =  JSON.parse(members),
-                                        Members_group =[];
-                                    for(var i= 0; i < members_tmp.length; i++)
-                                    {
-                                        if( data.user.username  != members_tmp[i].username){
-                                            if(members_tmp[i].state != "blocked" ){
-                                                Members_group.push(members_tmp[i].username);
+                                if(list_groupsID.length>0){
+                                    var IdGourpsAlt = list_groupsID[Math.floor(Math.random() * list_groupsID.length)] ,
+                                        Members_groupURL = process.env.GITLAB_URL + '/api/v3/groups/' + IdGourpsAlt + '/members?private_token='+ process.env.GITLAB_TOKEN ;
+                                    request(Members_groupURL, function (error, response, members) {
+                                        var members_tmp =  JSON.parse(members),
+                                            Members_group =[];
+                                        for(var i= 0; i < members_tmp.length; i++)
+                                        {
+                                            if( data.user.username  != members_tmp[i].username){
+                                                if(members_tmp[i].state != "blocked" ){
+                                                    Members_group.push(members_tmp[i].username);
+                                                }
                                             }
                                         }
-                                    }
-                                        console.log("Members_group ==>" ,Members_group);
-                                });
-                            }
-                        });
+
+                                        if(Members_group.length>0){
+                                            reviewers = members_tmp ;
+                                        }
+
+                                        if(reviewers.length > 2){
+                                            var rand1 = reviewers[Math.floor(Math.random() * reviewers.length)] ,
+                                                rand2 = reviewers[Math.floor(Math.random() * reviewers.length)];
+                                            reviewers = [];
+                                            if(rand1 != rand2){
+                                                reviewers.push(rand1);
+                                                reviewers.push(rand2);
+                                            }else{
+                                                reviewers.push(rand1);
+                                                rand2 = reviewers[Math.floor(Math.random() * reviewers.length)];
+                                                reviewers.push(rand2);
+                                            }
+                                        }
+                                        console.log("Members_group ==>" ,reviewers);
+                                    });
+                                }
+                            });
+                            console.log("after ........" , reviewers);
+                        }
+
                         return;
                         request.post({
                             url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
