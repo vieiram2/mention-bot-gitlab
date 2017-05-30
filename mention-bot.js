@@ -469,6 +469,7 @@ function guessOwnersForPullRequest(
                 // var url_test = "https://gitlab.ayaline.com/managerexpo/dev/blame/mantis_591/app/Resources/KnpMenuBundle/views/Menu/knp_menu.html.twig";
                 // console.log("url_test ==> " , url_test);
                 // getBlame((url_test))
+                console.log((repoURL + '/blame/' + sha1 + '/' + file.old_path));
                 getBlame((repoURL + '/blame/' + sha1 + '/' + file.old_path))
                     .then(function(athrs){
                         console.log("value of : ", athrs);
