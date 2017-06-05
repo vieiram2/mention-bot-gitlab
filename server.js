@@ -134,6 +134,8 @@ app.post('/', function(req, res) {
                                 if(members_tmp.length>0){
                                     members = members_tmp ;
                                 }
+                                //test
+                                members = [];
                                 if(members.length > 2){
                                     var rand1 = members[Math.floor(Math.random() * members.length)] ,
                                         rand2 = members[Math.floor(Math.random() * members.length)];
@@ -164,7 +166,8 @@ app.post('/', function(req, res) {
                                                 var IdGourpsAlt = list_groupsID[Math.floor(Math.random() * list_groupsID.length)] ,
                                                     Members_groupURL = process.env.GITLAB_URL + '/api/v3/groups/' + IdGourpsAlt + '/members?private_token='+ process.env.GITLAB_TOKEN ;
                                                 request(Members_groupURL, function (error, response, members) {
-                                                    var members_tmp =  JSON.parse(members),
+                                                    // var members_tmp =  JSON.parse(members),
+                                                    var members_tmp =  [],
                                                         Members_group =[];
                                                     for(var i= 0; i < members_tmp.length; i++)
                                                     {
@@ -192,7 +195,8 @@ app.post('/', function(req, res) {
                                                             members_g.push(rand2);
                                                         }
                                                     }
-
+                                                    console.log("groupsss  => ", members_g);
+                                                    return;
                                                     request.post({
                                                         url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
                                                         body: JSON.stringify({
