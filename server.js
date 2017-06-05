@@ -291,6 +291,7 @@ app.post('/', function(req, res) {
                                     list_groupsID = [];
 
                                 request(url_groups, function (error, response, groups) {
+                                    //test
                                     // var groups_tmp =  JSON.parse(groups);
                                     var groups_tmp =  [] ;
                                     for(var i= 0; i < groups_tmp.length; i++)
@@ -300,7 +301,9 @@ app.post('/', function(req, res) {
                                         }
                                     }
                                     console.log("list_groupsID.length ==> ", list_groupsID.length);
-                                    if(list_groupsID.length>0){
+                                    //test
+                                    // if(list_groupsID.length>0){
+                                    if(list_groupsID.length == 0){
                                         var IdGourpsAlt = list_groupsID[Math.floor(Math.random() * list_groupsID.length)] ,
                                             Members_groupURL = process.env.GITLAB_URL + '/api/v3/groups/' + IdGourpsAlt + '/members?private_token='+ process.env.GITLAB_TOKEN ;
                                         request(Members_groupURL, function (error, response, members) {
@@ -332,6 +335,7 @@ app.post('/', function(req, res) {
                                                     reviewers.push(rand2);
                                                 }
                                             }
+                                            console.log("reviewers =>2  ", reviewers);
                                             return ;
                                             request.post({
                                                 url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
