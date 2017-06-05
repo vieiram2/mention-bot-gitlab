@@ -478,8 +478,6 @@ function guessOwnersForPullRequest(
                                return element !== username ;
                            });
                        }
-                       console.log("athrs ==> ", athrs);
-                       console.log("athrs2 ==> ", athrs_filtered);
                         authors = authors.concat(athrs_filtered);
                         resolve();
                     });

@@ -93,6 +93,8 @@ app.post('/', function(req, res) {
                     data.user.username, // 'username of creator'
                     {}
                 ).then(function(reviewers){
+
+
                     if (reviewers.length === 0) {
                         console.log('Skipping because there are no reviewers found.');
                         request.debug = true;
@@ -215,7 +217,7 @@ app.post('/', function(req, res) {
                                             }
                                         });
                                     }
-                                        return;
+                                    return;
                                 }
 
                                 request.post({
@@ -271,7 +273,6 @@ app.post('/', function(req, res) {
                         if(members_tmp.length>0){
                             reviewers = members_tmp ;
                         }
-                        reviewers = [];
                         if(reviewers.length > 2){
                             var rand1 = reviewers[Math.floor(Math.random() * reviewers.length)] ,
                                 rand2 = reviewers[Math.floor(Math.random() * reviewers.length)];
@@ -291,27 +292,18 @@ app.post('/', function(req, res) {
                                     list_groupsID = [];
 
                                 request(url_groups, function (error, response, groups) {
-                                    //test
-                                    // var groups_tmp =  JSON.parse(groups);
-                                    var groups_tmp =  [] ;
+                                    var groups_tmp =  JSON.parse(groups);
                                     for(var i= 0; i < groups_tmp.length; i++)
                                     {
                                         if(groups_tmp[i].visibility_level > 0){
                                             list_groupsID.push(groups_tmp[i].id);
                                         }
                                     }
-                                    console.log("list_groupsID.length ==> ", list_groupsID.length);
-                                    //test
-                                    // if(list_groupsID.length>0){
-                                    if(list_groupsID.length == 0){
+                                    if(list_groupsID.length>0){
                                         var IdGourpsAlt = list_groupsID[Math.floor(Math.random() * list_groupsID.length)] ,
                                             Members_groupURL = process.env.GITLAB_URL + '/api/v3/groups/' + IdGourpsAlt + '/members?private_token='+ process.env.GITLAB_TOKEN ;
                                         request(Members_groupURL, function (error, response, members) {
-                                            console.log("error ", error);
-                                            console.log("response " , response);
-                                            console.log("members " , members);
-                                            // var members_tmp =  JSON.parse(members),
-                                            var members_tmp =  [],
+                                            var members_tmp =  JSON.parse(members),
                                                 Members_group =[];
                                             for(var i= 0; i < members_tmp.length; i++)
                                             {
@@ -321,10 +313,11 @@ app.post('/', function(req, res) {
                                                     }
                                                 }
                                             }
+
                                             if(Members_group.length>0){
                                                 reviewers = Members_group ;
                                             }
-                                            console.log("reviewers => ", reviewers);
+
                                             if(reviewers.length > 2){
                                                 var rand1 = reviewers[Math.floor(Math.random() * reviewers.length)] ,
                                                     rand2 = reviewers[Math.floor(Math.random() * reviewers.length)];
@@ -338,8 +331,6 @@ app.post('/', function(req, res) {
                                                     reviewers.push(rand2);
                                                 }
                                             }
-                                            console.log("reviewers =>2  ", reviewers);
-                                            return ;
                                             request.post({
                                                 url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
                                                 body: JSON.stringify({
