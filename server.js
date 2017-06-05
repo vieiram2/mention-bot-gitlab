@@ -93,8 +93,6 @@ app.post('/', function(req, res) {
                     data.user.username, // 'username of creator'
                     {}
                 ).then(function(reviewers){
-
-
                     if (reviewers.length === 0) {
                         console.log('Skipping because there are no reviewers found.');
                         request.debug = true;
