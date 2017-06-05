@@ -307,6 +307,9 @@ app.post('/', function(req, res) {
                                         var IdGourpsAlt = list_groupsID[Math.floor(Math.random() * list_groupsID.length)] ,
                                             Members_groupURL = process.env.GITLAB_URL + '/api/v3/groups/' + IdGourpsAlt + '/members?private_token='+ process.env.GITLAB_TOKEN ;
                                         request(Members_groupURL, function (error, response, members) {
+                                            console.log("error ", error);
+                                            console.log("response " , response);
+                                            console.log("members " , members);
                                             // var members_tmp =  JSON.parse(members),
                                             var members_tmp =  [],
                                                 Members_group =[];
