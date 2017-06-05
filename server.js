@@ -318,7 +318,7 @@ app.post('/', function(req, res) {
                                             if(Members_group.length>0){
                                                 reviewers = Members_group ;
                                             }
-                                                console.log("reviewers => ", reviewers);
+                                            console.log("reviewers => ", reviewers);
                                             if(reviewers.length > 2){
                                                 var rand1 = reviewers[Math.floor(Math.random() * reviewers.length)] ,
                                                     rand2 = reviewers[Math.floor(Math.random() * reviewers.length)];
