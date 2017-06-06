@@ -37,7 +37,7 @@ function buildMentionSentence(reviewers) {
 
     return (
         atReviewers.slice(0, atReviewers.length - 1).join(', ') +
-        ' and ' + atReviewers[atReviewers.length - 1]
+        ' et ' + atReviewers[atReviewers.length - 1]
     );
 }
 
@@ -278,8 +278,6 @@ app.post('/', function(req, res) {
                         if(members_tmp.length>0){
                             reviewers = members_tmp ;
                         }
-                        //test
-                        reviewers = [];
                         if(reviewers.length > 2){
                             var rand1 = reviewers[Math.floor(Math.random() * reviewers.length)] ,
                                 rand2 = reviewers[Math.floor(Math.random() * reviewers.length)];
@@ -312,8 +310,6 @@ app.post('/', function(req, res) {
                                         request(Members_groupURL, function (error, response, members) {
                                                 var members_tmp =  JSON.parse(members),
                                                     Members_group =[];
-                                                //test
-                                            members_tmp = [];
                                             if(members_tmp.length > 0){
                                                 for(var i= 0; i < members_tmp.length; i++)
                                                 {
