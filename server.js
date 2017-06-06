@@ -278,6 +278,8 @@ app.post('/', function(req, res) {
                         if(members_tmp.length>0){
                             reviewers = members_tmp ;
                         }
+                        //test
+                        reviewers = [];
                         if(reviewers.length > 2){
                             var rand1 = reviewers[Math.floor(Math.random() * reviewers.length)] ,
                                 rand2 = reviewers[Math.floor(Math.random() * reviewers.length)];
