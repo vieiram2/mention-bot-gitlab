@@ -166,32 +166,35 @@ app.post('/', function(req, res) {
                                                 var IdGourpsAlt = list_groupsID[Math.floor(Math.random() * list_groupsID.length)] ,
                                                     Members_groupURL = process.env.GITLAB_URL + '/api/v3/groups/' + IdGourpsAlt + '/members?private_token='+ process.env.GITLAB_TOKEN ;
                                                 request(Members_groupURL, function (error, response, members) {
+
                                                     var members_tmp =  JSON.parse(members),
                                                         Members_group =[];
-                                                    for(var i= 0; i < members_tmp.length; i++)
-                                                    {
-                                                        if( data.user.username  != members_tmp[i].username){
-                                                            if(members_tmp[i].state != "blocked" ){
-                                                                Members_group.push(members_tmp[i].username);
+                                                    if(members_tmp.length > 0){
+                                                        for(var i= 0; i < members_tmp.length; i++)
+                                                        {
+                                                            if( data.user.username  != members_tmp[i].username){
+                                                                if(members_tmp[i].state != "blocked" ){
+                                                                    Members_group.push(members_tmp[i].username);
+                                                                }
                                                             }
                                                         }
-                                                    }
 
-                                                    if(Members_group.length>0){
-                                                        members_g = Members_group ;
-                                                    }
+                                                        if(Members_group.length>0){
+                                                            members_g = Members_group ;
+                                                        }
 
-                                                    if(members_g.length > 2){
-                                                        var rand1 = members_g[Math.floor(Math.random() * members_g.length)] ,
-                                                            rand2 = members_g[Math.floor(Math.random() * members_g.length)];
-                                                        members_g = [];
-                                                        if(rand1 != rand2){
-                                                            members_g.push(rand1);
-                                                            members_g.push(rand2);
-                                                        }else{
-                                                            members_g.push(rand1);
-                                                            rand2 = members_g[Math.floor(Math.random() * members_g.length)];
-                                                            members_g.push(rand2);
+                                                        if(members_g.length > 2){
+                                                            var rand1 = members_g[Math.floor(Math.random() * members_g.length)] ,
+                                                                rand2 = members_g[Math.floor(Math.random() * members_g.length)];
+                                                            members_g = [];
+                                                            if(rand1 != rand2){
+                                                                members_g.push(rand1);
+                                                                members_g.push(rand2);
+                                                            }else{
+                                                                members_g.push(rand1);
+                                                                rand2 = members_g[Math.floor(Math.random() * members_g.length)];
+                                                                members_g.push(rand2);
+                                                            }
                                                         }
                                                     }
 
@@ -200,6 +203,7 @@ app.post('/', function(req, res) {
                                                         body: JSON.stringify({
                                                             note : messageGenerator(
                                                                 members_g,
+                                                                data.user.username,
                                                                 buildMentionSentence,
                                                                 defaultMessageGenerator)
                                                         }),
@@ -225,6 +229,7 @@ app.post('/', function(req, res) {
                                     body: JSON.stringify({
                                         note : messageGenerator(
                                             members,
+                                            data.user.username,
                                             buildMentionSentence,
                                             defaultMessageGenerator)
                                     }),
@@ -303,39 +308,43 @@ app.post('/', function(req, res) {
                                         var IdGourpsAlt = list_groupsID[Math.floor(Math.random() * list_groupsID.length)] ,
                                             Members_groupURL = process.env.GITLAB_URL + '/api/v3/groups/' + IdGourpsAlt + '/members?private_token='+ process.env.GITLAB_TOKEN ;
                                         request(Members_groupURL, function (error, response, members) {
-                                            var members_tmp =  JSON.parse(members),
-                                                Members_group =[];
-                                            for(var i= 0; i < members_tmp.length; i++)
-                                            {
-                                                if( data.user.username  != members_tmp[i].username){
-                                                    if(members_tmp[i].state != "blocked" ){
-                                                        Members_group.push(members_tmp[i].username);
+                                                var members_tmp =  JSON.parse(members),
+                                                    Members_group =[];
+                                            if(members_tmp.length > 0){
+                                                for(var i= 0; i < members_tmp.length; i++)
+                                                {
+                                                    if( data.user.username  != members_tmp[i].username){
+                                                        if(members_tmp[i].state != "blocked" ){
+                                                            Members_group.push(members_tmp[i].username);
+                                                        }
+                                                    }
+                                                }
+
+                                                if(Members_group.length>0){
+                                                    reviewers = Members_group ;
+                                                }
+
+                                                if(reviewers.length > 2){
+                                                    var rand1 = reviewers[Math.floor(Math.random() * reviewers.length)] ,
+                                                        rand2 = reviewers[Math.floor(Math.random() * reviewers.length)];
+                                                    reviewers = [];
+                                                    if(rand1 != rand2){
+                                                        reviewers.push(rand1);
+                                                        reviewers.push(rand2);
+                                                    }else{
+                                                        reviewers.push(rand1);
+                                                        rand2 = reviewers[Math.floor(Math.random() * reviewers.length)];
+                                                        reviewers.push(rand2);
                                                     }
                                                 }
                                             }
 
-                                            if(Members_group.length>0){
-                                                reviewers = Members_group ;
-                                            }
-
-                                            if(reviewers.length > 2){
-                                                var rand1 = reviewers[Math.floor(Math.random() * reviewers.length)] ,
-                                                    rand2 = reviewers[Math.floor(Math.random() * reviewers.length)];
-                                                reviewers = [];
-                                                if(rand1 != rand2){
-                                                    reviewers.push(rand1);
-                                                    reviewers.push(rand2);
-                                                }else{
-                                                    reviewers.push(rand1);
-                                                    rand2 = reviewers[Math.floor(Math.random() * reviewers.length)];
-                                                    reviewers.push(rand2);
-                                                }
-                                            }
                                             request.post({
                                                 url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
                                                 body: JSON.stringify({
                                                     note : messageGenerator(
                                                         reviewers,
+                                                        data.user.username,
                                                         buildMentionSentence,
                                                         defaultMessageGenerator)
                                                 }),
@@ -361,6 +370,7 @@ app.post('/', function(req, res) {
                             body: JSON.stringify({
                                 note : messageGenerator(
                                     reviewers,
+                                    data.user.username,
                                     buildMentionSentence,
                                     defaultMessageGenerator)
                             }),
