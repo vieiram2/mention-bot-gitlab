@@ -310,6 +310,8 @@ app.post('/', function(req, res) {
                                         request(Members_groupURL, function (error, response, members) {
                                                 var members_tmp =  JSON.parse(members),
                                                     Members_group =[];
+                                                //test
+                                            members_tmp = [];
                                             if(members_tmp.length > 0){
                                                 for(var i= 0; i < members_tmp.length; i++)
                                                 {
