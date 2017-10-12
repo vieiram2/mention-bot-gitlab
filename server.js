@@ -256,12 +256,29 @@ app.post('/', function(req, res) {
                     request(url_users_bloced, function (error, response, body) {
                         var body_tmp =  JSON.parse(body);
 
-                        // var p=0;
-                        // for(var n= 0; n < body_tmp.length; n++){
-                        //     if(body_tmp[n].username == reviewers[p]){
-                        //         p++;
-                        //     }
-                        // }
+                        var usernames = [];
+                        for(var y=0; y<body_tmp.length; y++){
+                           usernames.push(body_tmp[y].username);
+                        }
+
+                        for(var m=0; m<reviewers.length; m++){
+                            if(data.user.username == reviewers[m]){
+                                reviewers.splice(m,1);
+                            }
+                        }
+
+                        for(var m=0; m<reviewers.length; m++){
+                            var contains = usernames.some(function(ele){
+                                return ele === reviewers[m];
+                            });
+
+                            if(contains == false){
+                                reviewers.splice(m,1);
+                            }
+                        }
+                        console.log("reviewers ====>" , reviewers);
+
+
                         for(var i= 0; i < body_tmp.length; i++)
                         {
                             if( data.user.username  != body_tmp[i].username){
