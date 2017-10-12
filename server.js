@@ -70,7 +70,7 @@ app.post('/', function(req, res) {
             );
             return res.end();
         }
-
+        console.log("Data is: ", data );
         request({
             url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_request/' + data.object_attributes.id + '/changes',
             headers : {
@@ -93,8 +93,6 @@ app.post('/', function(req, res) {
                     data.user.username, // 'username of creator'
                     {}
                 ).then(function(reviewers){
-
-
                     if (reviewers.length === 0) {
                         console.log('Skipping because there are no reviewers found.');
                         request.debug = true;
@@ -250,7 +248,6 @@ app.post('/', function(req, res) {
                     request.debug = true;
 
                     /***********************************************************/
-                    console.log("Data : ", data );
                     var url_users_bloced = process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users?private_token='+ process.env.GITLAB_TOKEN ;
                     // var url_users_bloced = process.env.GITLAB_URL + '/api/v3/projects/'+768+'/users?private_token='+ process.env.GITLAB_TOKEN ;
                     console.log("url_users_bloced .... ===> ", url_users_bloced);
