@@ -25,6 +25,7 @@
     "npm": "^3.10.10",
     "phantomjs-polyfill": "0.0.2",
     "phantomjs-prebuilt": "^2.1.14",
-    "request": "^2.81.0"
+    "request": "^2.81.0",
+    "heroku-postbuild": "heroku-nextjs-build"
   }
 }
