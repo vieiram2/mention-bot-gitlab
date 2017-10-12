@@ -257,30 +257,30 @@ app.post('/', function(req, res) {
                         var body_tmp =  JSON.parse(body);
                         var usernames = [];
 
-                        // getting list of users (username)
-                        for(var y=0; y<body_tmp.length; y++){
-                           usernames.push(body_tmp[y].username);
-                        }
-                        console.log("usernames => ", usernames);
-
-                        //delete creator from reviewers
-                        for(var p=0; p<reviewers.length; p++){
-                            if(data.user.username == reviewers[p]){
-                                reviewers.splice(p,1);
-                            }
-                        }
-                        console.log("R after slice creator=> ", reviewers);
-
-                        //delete reviewers if username not exists
-                        for(var m=0; m<reviewers.length; m++){
-                            var contains = usernames.some(function(ele){
-                                return ele === reviewers[m];
-                            });
-                            if(contains == false){
-                                reviewers.splice(m,1);
-                            }
-                        }
-                        console.log("R after slice inexisting user => ", reviewers);
+                        // // getting list of users (username)
+                        // for(var y=0; y<body_tmp.length; y++){
+                        //    usernames.push(body_tmp[y].username);
+                        // }
+                        // console.log("usernames => ", usernames);
+                        //
+                        // //delete creator from reviewers
+                        // for(var p=0; p<reviewers.length; p++){
+                        //     if(data.user.username == reviewers[p]){
+                        //         reviewers.splice(p,1);
+                        //     }
+                        // }
+                        // console.log("R after slice creator=> ", reviewers);
+                        //
+                        // //delete reviewers if username not exists
+                        // for(var m=0; m<reviewers.length; m++){
+                        //     var contains = usernames.some(function(ele){
+                        //         return ele === reviewers[m];
+                        //     });
+                        //     if(contains == false){
+                        //         reviewers.splice(m,1);
+                        //     }
+                        // }
+                        // console.log("R after slice inexisting user => ", reviewers);
 
                         for(var i= 0; i < body_tmp.length; i++)
                         {
