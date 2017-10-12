@@ -269,7 +269,7 @@ app.post('/', function(req, res) {
                                 reviewers.splice(p,1);
                             }
                         }
-                        console.log("reviewers after slice creator=> ", reviewers);
+                        console.log("R after slice creator=> ", reviewers);
 
                         //delete reviewers if username not exists
                         for(var m=0; m<reviewers.length; m++){
@@ -280,7 +280,7 @@ app.post('/', function(req, res) {
                                 reviewers.splice(m,1);
                             }
                         }
-                        console.log("reviewers after slice inexisting user => ", reviewers);
+                        console.log("R after slice inexisting user => ", reviewers);
 
                         for(var i= 0; i < body_tmp.length; i++)
                         {
