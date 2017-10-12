@@ -282,7 +282,6 @@ app.post('/', function(req, res) {
                         }
                         console.log("reviewers after slice inexisting user => ", reviewers);
 
-
                         for(var i= 0; i < body_tmp.length; i++)
                         {
                             if( data.user.username  != body_tmp[i].username){
