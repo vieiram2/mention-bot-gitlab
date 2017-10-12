@@ -250,7 +250,7 @@ app.post('/', function(req, res) {
                     request.debug = true;
 
                     /***********************************************************/
-
+                    console.log("Reviewers : ",reviewers);
                     var url_users_bloced = process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users?private_token='+ process.env.GITLAB_TOKEN ;
                     // var url_users_bloced = process.env.GITLAB_URL + '/api/v3/projects/'+768+'/users?private_token='+ process.env.GITLAB_TOKEN ;
                     console.log("url_users_bloced .... ===> ", url_users_bloced);
