@@ -93,6 +93,7 @@ app.post('/', function(req, res) {
                     data.user.username, // 'username of creator'
                     {}
                 ).then(function(reviewers){
+                    console.log("Reviewers sont : " , reviewers);
                     if (reviewers.length === 0) {
                         console.log('Skipping because there are no reviewers found.');
                         request.debug = true;
@@ -254,6 +255,13 @@ app.post('/', function(req, res) {
                     var members_blocked = [];
                     request(url_users_bloced, function (error, response, body) {
                         var body_tmp =  JSON.parse(body);
+
+                        // var p=0;
+                        // for(var n= 0; n < body_tmp.length; n++){
+                        //     if(body_tmp[n].username == reviewers[p]){
+                        //         p++;
+                        //     }
+                        // }
                         for(var i= 0; i < body_tmp.length; i++)
                         {
                             if( data.user.username  != body_tmp[i].username){
