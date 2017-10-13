@@ -340,10 +340,10 @@ function getBlame(url){
                                     }else{
                                         author =  author.substring(1, author.length);
                                     }
-                                    authors.push(author);
+                                    authors.push({"name": $(this).text(), "username": author});
                                 }
                             });
-
+                                console.log("authors ==> ", authors);
                             return authors;
                         }, function (err,result) {
                             resolve(result);
