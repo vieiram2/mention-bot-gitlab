@@ -99,7 +99,7 @@ app.post('/', function(req, res) {
                         var body_tmp =  JSON.parse(body);
                         var usernames =[];
                         var usernames_tmp =[];
-                        // Getting list of users in this project (usernames)
+                        // Getting list of users in this project (usernames) and not blocked
                         for(var y=0; y<body_tmp.length; y++){
                             if(data.user.username != body_tmp[y].username && body_tmp[y].state != "blocked"){
                                 usernames_tmp.push((body_tmp[y].username));
@@ -112,6 +112,8 @@ app.post('/', function(req, res) {
                                 reviewers.splice(m,1);
                             }
                         }
+                        console.log("usernames_tmp ==> ", usernames_tmp);
+                        console.log("reviewers ==> ", reviewers);
                       //getting just existing users
                         var exist;
                         for(var q=0; q<usernames_tmp.length; q++)
