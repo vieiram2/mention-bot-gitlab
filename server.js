@@ -159,7 +159,21 @@ app.post('/', function(req, res) {
 
                             }
                         }
-                        console.log("reviewers ======", reviewers);
+
+                        // if list of reviewers content is 0
+
+                        // -----------------------------------------------------------
+                        var url_groups = process.env.GITLAB_URL + '/api/v3/groups?private_token='+ process.env.GITLAB_TOKEN;
+                            console.log("url is  : ", url_groups);
+                        request(url_groups, function (error, response, groups) {
+                            var groups_tmp =  JSON.parse(groups);
+                           console.log("groups_tmp ==> ", groups_tmp);
+
+                        });
+
+
+
+                        // -----------------------------------------------------------
                         request.post({
                             url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
                             body: JSON.stringify({
