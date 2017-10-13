@@ -191,7 +191,7 @@ app.post('/', function(req, res) {
                                         }
                                     }
 
-                                    reviewers = Members_group;
+                                   var  reviewers = Members_group;
 
 
                                     // getting just 2 users from the list of reviewers
