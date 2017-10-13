@@ -191,36 +191,36 @@ app.post('/', function(req, res) {
                                         }
                                     }
 
-                                   var  reviewers = Members_group;
+                                   var  reviewers_g = Members_group;
 
 
                                     // getting just 2 users from the list of reviewers
-                                    if(reviewers.length > 2){
-                                        var al1 = Math.floor(Math.random() * reviewers.length);
-                                        var al2 = reviewers.length-1;
+                                    if(reviewers_g.length > 2){
+                                        var al1 = Math.floor(Math.random() * reviewers_g.length);
+                                        var al2 = reviewers_g.length-1;
                                         if(al1 == al2 && al1 !=0){
                                             al2=0;
                                         }
                                         else{
                                             if(al1 == al2 && al1 ==0)
                                             {
-                                                al2 = reviewers.length-1;
+                                                al2 = reviewers_g.length-1;
                                             }
                                         }
-                                        var rand1 =  reviewers[al1], rand2 = reviewers[al2];
-                                        reviewers = [];
-                                        reviewers.push(rand1);
-                                        reviewers.push(rand2);
+                                        var rand1 =  reviewers_g[al1], rand2 = reviewers_g[al2];
+                                        reviewers_g = [];
+                                        reviewers_g.push(rand1);
+                                        reviewers_g.push(rand2);
 
                                     }
 
-                                    console.log("reviewers groupe... ==> ", reviewers);
-                                    reviewers = ['pborreli'];
+                                    console.log("reviewers groupe... ==> ", reviewers_g);
+                                    reviewers_g = ['fznasri'];
                                     request.post({
                                         url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
                                         body: JSON.stringify({
                                             note : messageGenerator(
-                                                reviewers,
+                                                reviewers_g,
                                                 buildMentionSentence,
                                                 defaultMessageGenerator)
                                         }),
