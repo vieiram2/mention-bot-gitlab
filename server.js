@@ -291,7 +291,6 @@ app.post('/', function(req, res) {
                             }
                         }
                         console.log("usernames..........." , usernames);
-
                         reviewers = usernames ;
 
                         if(reviewers.length > 2){
@@ -307,7 +306,6 @@ app.post('/', function(req, res) {
                                 reviewers.push(rand1);
                                 reviewers.push(rand2);
                             }
-
                         }else{
                             if(reviewers.length == 0){
                                 console.log("usernames ====>" , usernames_tmp);
@@ -325,7 +323,6 @@ app.post('/', function(req, res) {
                                 }
                             }
                         }
-
                         request.post({
                             url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
                             body: JSON.stringify({
