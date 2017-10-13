@@ -473,15 +473,7 @@ function guessOwnersForPullRequest(
                 console.log((repoURL + '/blame/' + sha1 + '/' + file.old_path));
                 getBlame((repoURL + '/blame/' + sha1 + '/' + file.old_path))
                     .then(function(athrs){
-                        console.log("athrs => ",athrs);
-                        var athrs_filtered =[];
-                       if(athrs != undefined){
-                            athrs_filtered = athrs.filter(function(element){
-                               return element !== username ;
-                           });
-                       }
-                        authors = authors.concat(athrs_filtered);
-                        console.log("blam , authors  => ",authors);
+                        authors = authors.concat(athrs);
                         resolve();
                     });
             }));
