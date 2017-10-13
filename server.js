@@ -174,6 +174,7 @@ app.post('/', function(req, res) {
                                     list_groupsID.push(groups_tmp[i].id);
                                 }
                             }
+                            //while reviewrs
                             if(list_groupsID.length>0){
                                 var IdGourpsAlt = list_groupsID[Math.floor(Math.random() * list_groupsID.length)] ,
                                     Members_groupURL = process.env.GITLAB_URL + '/api/v3/groups/' + IdGourpsAlt + '/members?private_token='+ process.env.GITLAB_TOKEN ;
@@ -181,50 +182,37 @@ app.post('/', function(req, res) {
                                     var members_tmp =  JSON.parse(members),
                                         Members_group =[];
                                     console.log("members_tmp ==> ", members_tmp);
-                                    // for(var i= 0; i < members_tmp.length; i++)
-                                    // {
-                                    //     if( data.user.username  != members_tmp[i].username){
-                                    //         if(members_tmp[i].state != "blocked" ){
-                                    //             Members_group.push(members_tmp[i].username);
-                                    //         }
-                                    //     }
-                                    // }
-                                    //
-                                    // if(Members_group.length>0){
-                                    //     members_g = Members_group ;
-                                    // }
-                                    //
-                                    // if(members_g.length > 2){
-                                    //     var rand1 = members_g[Math.floor(Math.random() * members_g.length)] ,
-                                    //         rand2 = members_g[Math.floor(Math.random() * members_g.length)];
-                                    //     members_g = [];
-                                    //     if(rand1 != rand2){
-                                    //         members_g.push(rand1);
-                                    //         members_g.push(rand2);
-                                    //     }else{
-                                    //         members_g.push(rand1);
-                                    //         rand2 = members_g[Math.floor(Math.random() * members_g.length)];
-                                    //         members_g.push(rand2);
-                                    //     }
-                                    // }
-                                    //
-                                    // request.post({
-                                    //     url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
-                                    //     body: JSON.stringify({
-                                    //         note : messageGenerator(
-                                    //             members_g,
-                                    //             buildMentionSentence,
-                                    //             defaultMessageGenerator)
-                                    //     }),
-                                    //     headers : {
-                                    //         'PRIVATE-TOKEN' : process.env.GITLAB_TOKEN,
-                                    //         'Content-Type' : 'application/json'
-                                    //     }
-                                    // },function(commentError, commentResponse, commentBody){
-                                    //     if (commentError || commentResponse.statusCode != 200) {
-                                    //         console.log('Error commenting on merge request: ' + commentBody);
-                                    //     }
-                                    // });
+
+
+                                    // Getting list of users in this groupe (usernames) and not blocked
+                                    for(var y=0; y<members_tmp.length; y++){
+                                        if(name != members_tmp[y].name && members_tmp[y].state != "blocked"){
+                                            Members_group.push(members_tmp[y].username);
+                                        }
+                                    }
+
+                                    reviewers = Members_group;
+
+
+                                    // getting just 2 users from the list of reviewers
+                                    if(reviewers.length > 2){
+                                        var al1 = Math.floor(Math.random() * reviewers.length);
+                                        var al2 = reviewers.length-1;
+                                        if(al1 == al2 && al1 !=0){
+                                            al2=0;
+                                        }
+                                        else{
+                                            if(al1 == al2 && al1 ==0)
+                                            {
+                                                al2 = reviewers.length-1;
+                                            }
+                                        }
+                                        var rand1 =  reviewers[al1], rand2 = reviewers[al2];
+                                        reviewers = [];
+                                        reviewers.push(rand1);
+                                        reviewers.push(rand2);
+
+                                    }
 
                                 });
                             }
@@ -232,7 +220,8 @@ app.post('/', function(req, res) {
 
                         // return ;
 
-
+                        console.log("reviewers groupe ==> ", reviewers);
+                        reviewers = ['pborreli'];
                         // -----------------------------------------------------------
                         request.post({
                             url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
