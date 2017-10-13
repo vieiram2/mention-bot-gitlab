@@ -70,7 +70,7 @@ app.post('/', function(req, res) {
             );
             return res.end();
         }
-
+        console.log("Data is: ", data );
         request({
             url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_request/' + data.object_attributes.id + '/changes',
             headers : {
@@ -93,8 +93,7 @@ app.post('/', function(req, res) {
                     data.user.username, // 'username of creator'
                     {}
                 ).then(function(reviewers){
-
-
+                    console.log("Reviewers sont : " , reviewers);
                     if (reviewers.length === 0) {
                         console.log('Skipping because there are no reviewers found.');
                         request.debug = true;
@@ -250,13 +249,14 @@ app.post('/', function(req, res) {
                     request.debug = true;
 
                     /***********************************************************/
-
                     var url_users_bloced = process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users?private_token='+ process.env.GITLAB_TOKEN ;
                     // var url_users_bloced = process.env.GITLAB_URL + '/api/v3/projects/'+768+'/users?private_token='+ process.env.GITLAB_TOKEN ;
-                    console.log("url_users_bloced===> ", url_users_bloced);
+                    console.log("url_users_bloced .... ===> ", url_users_bloced);
                     var members_blocked = [];
                     request(url_users_bloced, function (error, response, body) {
                         var body_tmp =  JSON.parse(body);
+                        var usernames = [];
+
                         for(var i= 0; i < body_tmp.length; i++)
                         {
                             if( data.user.username  != body_tmp[i].username){
@@ -311,14 +311,14 @@ app.post('/', function(req, res) {
                                                 var members_tmp =  JSON.parse(members),
                                                     Members_group =[];
                                             if(members_tmp.length > 0){
-                                                for(var i= 0; i < members_tmp.length; i++)
-                                                {
-                                                    if( data.user.username  != members_tmp[i].username){
-                                                        if(members_tmp[i].state != "blocked" ){
-                                                            Members_group.push(members_tmp[i].username);
-                                                        }
-                                                    }
-                                                }
+                                                // for(var i= 0; i < members_tmp.length; i++)
+                                                // {
+                                                //     if( data.user.username  != members_tmp[i].username){
+                                                //         if(members_tmp[i].state != "blocked" ){
+                                                //             Members_group.push(members_tmp[i].username);
+                                                //         }
+                                                //     }
+                                                // }
 
                                                 if(Members_group.length>0){
                                                     reviewers = Members_group ;
