@@ -340,10 +340,11 @@ function getBlame(url){
                                     }else{
                                         author =  author.substring(1, author.length);
                                     }
-                                    authors.push({"name": $(this).text(), "username": author});
+                                    // authors.push({"name": $(this).text(), "username": author});
+                                    authors.push(author);
                                 }
                             });
-                                console.log("authors ==> ", authors);
+                            console.log("authors => ",authors);
                             return authors;
                         }, function (err,result) {
                             resolve(result);
@@ -472,6 +473,7 @@ function guessOwnersForPullRequest(
                 console.log((repoURL + '/blame/' + sha1 + '/' + file.old_path));
                 getBlame((repoURL + '/blame/' + sha1 + '/' + file.old_path))
                     .then(function(athrs){
+                        console.log("athrs => ",athrs);
                         var athrs_filtered =[];
                        if(athrs != undefined){
                             athrs_filtered = athrs.filter(function(element){
@@ -479,6 +481,7 @@ function guessOwnersForPullRequest(
                            });
                        }
                         authors = authors.concat(athrs_filtered);
+                        console.log("blam , authors  => ",authors);
                         resolve();
                     });
             }));

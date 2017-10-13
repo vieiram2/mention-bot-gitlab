@@ -93,6 +93,7 @@ app.post('/', function(req, res) {
                     data.user.username, // 'username of creator'
                     {}
                 ).then(function(reviewers){
+                    console.log("rev before " , reviewers);
                     /***********************************************************/
                     var url_users = process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users?private_token='+ process.env.GITLAB_TOKEN ;
                     request(url_users, function (error, response, body) {
