@@ -214,13 +214,33 @@ app.post('/', function(req, res) {
 
                                     }
 
+                                    console.log("reviewers groupe... ==> ", reviewers);
+                                    reviewers = ['pborreli'];
+                                    request.post({
+                                        url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
+                                        body: JSON.stringify({
+                                            note : messageGenerator(
+                                                members_g,
+                                                buildMentionSentence,
+                                                defaultMessageGenerator)
+                                        }),
+                                        headers : {
+                                            'PRIVATE-TOKEN' : process.env.GITLAB_TOKEN,
+                                            'Content-Type' : 'application/json'
+                                        }
+                                    },function(commentError, commentResponse, commentBody){
+                                        if (commentError || commentResponse.statusCode != 200) {
+                                            console.log('Error commenting on merge request: ' + commentBody);
+                                        }
+                                    });
+
                                 });
                             }
                         });
 
-                        // return ;
+                        return ;
 
-                        console.log("reviewers groupe ==> ", reviewers);
+
                         reviewers = ['pborreli'];
                         // -----------------------------------------------------------
                         request.post({
