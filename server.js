@@ -98,43 +98,28 @@ app.post('/', function(req, res) {
                     var url_users = process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users?private_token='+ process.env.GITLAB_TOKEN ;
                     request(url_users, function (error, response, body) {
                         var body_tmp =  JSON.parse(body);
-                        var usernames =[];
+                        var name = data.user.name;
                         var usernames_tmp =[];
+                        var reviewers_tmp =[];
+
                         // Getting list of users in this project (usernames) and not blocked
                         for(var y=0; y<body_tmp.length; y++){
-                            if(data.user.username != body_tmp[y].username && body_tmp[y].state != "blocked"){
-                                usernames_tmp.push((body_tmp[y].username));
+                            if(name != body_tmp[y].name && body_tmp[y].state != "blocked"){
+                                usernames_tmp.push(body_tmp[y].username);
                             }
-                        }
-
-                        // Delete creator from list of reviewers
-                        for(var m=0; m<reviewers.length; m++){
-                            if(data.user.username == reviewers[m]){
-                                reviewers.splice(m,1);
-                            }
-                        }
-                        console.log("usernames_tmp ==> ", usernames_tmp);
-
-                        console.log("reviewers ==> ", reviewers);
-                      //getting just existing users
-                        var exist;
-                        for(var q=0; q<usernames_tmp.length; q++)
-                        {
-                            exist = false;
-                            for(var o=0; o<reviewers.length; o++)
+                            for(var h=0; h<reviewers.length; h++)
                             {
-                                if(reviewers[o] == usernames_tmp[q] )
+                                // extraire les usernames des noms du reviewers (et ignoré le nom du créateur)
+                                if(reviewers[h] == body_tmp[y].name && reviewers[h] != name )
                                 {
-                                    exist = true;
-                                    break;
+                                    reviewers_tmp.push(body_tmp[y].username);
                                 }
                             }
-                            if(exist){
-                                usernames.push(usernames_tmp[q]);
-                            }
                         }
 
-                        reviewers = usernames ;
+                        reviewers = reviewers_tmp;
+
+
                         // getting just 2 users from the list of reviewers
                         if(reviewers.length > 2){
                             var al1 = Math.floor(Math.random() * reviewers.length);
@@ -174,6 +159,7 @@ app.post('/', function(req, res) {
 
                             }
                         }
+                        console.log("reviewers ======", reviewers);
                         request.post({
                             url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
                             body: JSON.stringify({
