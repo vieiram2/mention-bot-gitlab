@@ -260,7 +260,7 @@ app.post('/', function(req, res) {
                         var usernames_tmp =[];
                         // Getting list of users in this project (usernames)
                         for(var y=0; y<body_tmp.length; y++){
-                            if(data.user.username != body_tmp[y].username){
+                            if(data.user.username != body_tmp[y].username && body_tmp[y].state != "blocked"){
                                 usernames_tmp.push((body_tmp[y].username));
                             }
                         }
@@ -292,112 +292,37 @@ app.post('/', function(req, res) {
                         }
                         console.log("usernames..........." , usernames);
 
+                        reviewers = usernames ;
 
-                        for(var i= 0; i < body_tmp.length; i++)
-                        {
-                            if( data.user.username  != body_tmp[i].username){
-                                if(body_tmp[i].state == "blocked" ){
-                                    members_blocked.push(body_tmp[i].username);
-                                }
-                            }
-                        }
-                        console.log("body_tmp members_blocked----------> ", members_blocked);
-                        var members_tmp =[];
-                        for(var i= 0; i < reviewers.length; i++)
-                        {
-                            for(var j=0 ; j<members_blocked.length; j++ ){
-                                if(members_blocked[j] !== reviewers[i]){
-                                    members_tmp.push(reviewers[i]);
-                                }
-                            }
-                        }
-                        if(members_tmp.length>0){
-                            reviewers = members_tmp ;
-                        }
                         if(reviewers.length > 2){
                             var rand1 = reviewers[Math.floor(Math.random() * reviewers.length)] ,
                                 rand2 = reviewers[Math.floor(Math.random() * reviewers.length)];
-                            reviewers = [];
                             if(rand1 != rand2){
+                                reviewers = [];
                                 reviewers.push(rand1);
                                 reviewers.push(rand2);
                             }else{
-                                reviewers.push(rand1);
                                 rand2 = reviewers[Math.floor(Math.random() * reviewers.length)];
+                                reviewers = [];
+                                reviewers.push(rand1);
                                 reviewers.push(rand2);
                             }
+
                         }else{
                             if(reviewers.length == 0){
-                                reviewers = [];
-                                var url_groups = process.env.GITLAB_URL + '/api/v3/groups?private_token='+ process.env.GITLAB_TOKEN ,
-                                    list_groupsID = [];
-
-                                request(url_groups, function (error, response, groups) {
-                                    var groups_tmp =  JSON.parse(groups);
-                                    for(var i= 0; i < groups_tmp.length; i++)
-                                    {
-                                        if(groups_tmp[i].visibility_level > 0){
-                                            list_groupsID.push(groups_tmp[i].id);
-                                        }
-                                    }
-                                    if(list_groupsID.length>0){
-                                        var IdGourpsAlt = list_groupsID[Math.floor(Math.random() * list_groupsID.length)] ,
-                                            Members_groupURL = process.env.GITLAB_URL + '/api/v3/groups/' + IdGourpsAlt + '/members?private_token='+ process.env.GITLAB_TOKEN ;
-                                        request(Members_groupURL, function (error, response, members) {
-                                                var members_tmp =  JSON.parse(members),
-                                                    Members_group =[];
-                                            if(members_tmp.length > 0){
-                                                for(var i= 0; i < members_tmp.length; i++)
-                                                {
-                                                    if( data.user.username  != members_tmp[i].username){
-                                                        if(members_tmp[i].state != "blocked" ){
-                                                            Members_group.push(members_tmp[i].username);
-                                                        }
-                                                    }
-                                                }
-
-                                                if(Members_group.length>0){
-                                                    reviewers = Members_group ;
-                                                }
-
-                                                if(reviewers.length > 2){
-                                                    var rand1 = reviewers[Math.floor(Math.random() * reviewers.length)] ,
-                                                        rand2 = reviewers[Math.floor(Math.random() * reviewers.length)];
-                                                    reviewers = [];
-                                                    if(rand1 != rand2){
-                                                        reviewers.push(rand1);
-                                                        reviewers.push(rand2);
-                                                    }else{
-                                                        reviewers.push(rand1);
-                                                        rand2 = reviewers[Math.floor(Math.random() * reviewers.length)];
-                                                        reviewers.push(rand2);
-                                                    }
-                                                }
-                                            }
-
-                                            request.post({
-                                                url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
-                                                body: JSON.stringify({
-                                                    note : messageGenerator(
-                                                        reviewers,
-                                                        data.user.username,
-                                                        buildMentionSentence,
-                                                        defaultMessageGenerator)
-                                                }),
-                                                headers : {
-                                                    'PRIVATE-TOKEN' : process.env.GITLAB_TOKEN,
-                                                    'Content-Type' : 'application/json'
-                                                }
-                                            },function(commentError, commentResponse, commentBody){
-                                                if (commentError || commentResponse.statusCode != 200) {
-                                                    console.log('Error commenting on merge request: ' + commentBody);
-                                                }
-                                            });
-
-                                        });
-                                    }
-                                });
-                                return;
+                                console.log("usernames ====>" , usernames_tmp);
+                                var rand1 = usernames_tmp[Math.floor(Math.random() * usernames_tmp.length)] ,
+                                    rand2 = usernames_tmp[Math.floor(Math.random() * usernames_tmp.length)];
+                                if(rand1 != rand2){
+                                    reviewers = [];
+                                    reviewers.push(rand1);
+                                    reviewers.push(rand2);
+                                }else{
+                                    rand2 = usernames_tmp[Math.floor(Math.random() * usernames_tmp.length)];
+                                    reviewers = [];
+                                    reviewers.push(rand1);
+                                    reviewers.push(rand2);
+                                }
                             }
                         }
 
