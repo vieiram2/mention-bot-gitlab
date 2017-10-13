@@ -311,14 +311,14 @@ app.post('/', function(req, res) {
                                                 var members_tmp =  JSON.parse(members),
                                                     Members_group =[];
                                             if(members_tmp.length > 0){
-                                                // for(var i= 0; i < members_tmp.length; i++)
-                                                // {
-                                                //     if( data.user.username  != members_tmp[i].username){
-                                                //         if(members_tmp[i].state != "blocked" ){
-                                                //             Members_group.push(members_tmp[i].username);
-                                                //         }
-                                                //     }
-                                                // }
+                                                for(var i= 0; i < members_tmp.length; i++)
+                                                {
+                                                    if( data.user.username  != members_tmp[i].username){
+                                                        if(members_tmp[i].state != "blocked" ){
+                                                            Members_group.push(members_tmp[i].username);
+                                                        }
+                                                    }
+                                                }
 
                                                 if(Members_group.length>0){
                                                     reviewers = Members_group ;
