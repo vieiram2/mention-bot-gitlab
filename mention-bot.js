@@ -328,23 +328,24 @@ function getBlame(url){
                         page.evaluate(function () {
                             var authors = [];
                             $('.commit-author-link').each(function () {
-                                var author = $(this).attr('href');
-                                if(authors.indexOf(author) == -1){
-                                    if (author.indexOf("mailto") >= 0){
-                                        var res_tmp = author.substring(7, author.length) ,
-                                            index = res_tmp.indexOf("@") ,
-                                            author = res_tmp.substring(0, index);
-                                        if(author == ''){
-                                            author = $(this).text();
-                                        }
-                                    }else{
-                                        author =  author.substring(1, author.length);
-                                    }
-                                    authors.push({"name": $(this).text(), "username": author});
-                                    // authors.push(author);
-                                }
+                                var author = $(this).text();
+                                // if(authors.indexOf(author) == -1){
+                                //     if (author.indexOf("mailto") >= 0){
+                                //         var res_tmp = author.substring(7, author.length) ,
+                                //             index = res_tmp.indexOf("@") ,
+                                //             author = res_tmp.substring(0, index);
+                                //         if(author == ''){
+                                //             author = $(this).text();
+                                //         }
+                                //     }else{
+                                //         author =  author.substring(1, author.length);
+                                //     }
+                                //     authors.push(author);
+                                // }
+
+                                authors.push(author);
                             });
-                            console.log("authors => ",authors);
+
                             return authors;
                         }, function (err,result) {
                             resolve(result);
@@ -473,7 +474,14 @@ function guessOwnersForPullRequest(
                 console.log((repoURL + '/blame/' + sha1 + '/' + file.old_path));
                 getBlame((repoURL + '/blame/' + sha1 + '/' + file.old_path))
                     .then(function(athrs){
-                        authors = authors.concat(athrs);
+                        var athrs_filtered =[];
+                       if(athrs != undefined){
+                            athrs_filtered = athrs.filter(function(element){
+                               return element !== username ;
+                           });
+                       }
+                        authors = authors.concat(athrs_filtered);
+                       console.log("authors -----> ",authors);
                         resolve();
                     });
             }));
