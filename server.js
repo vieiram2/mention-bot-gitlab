@@ -256,29 +256,41 @@ app.post('/', function(req, res) {
                     request(url_users_bloced, function (error, response, body) {
                         var body_tmp =  JSON.parse(body);
 
-                        var usernames = [];
+                        var usernames =[];
+                        var usernames_tmp =[];
+                        // Getting list of users in this project (usernames)
                         for(var y=0; y<body_tmp.length; y++){
-                           usernames.push(body_tmp[y].username);
+                            if(data.user.username != body_tmp[y].username){
+                                usernames_tmp.push((body_tmp[y].username));
+                            }
                         }
-                        console.log("usernames ====>" , usernames);
+                        console.log("usernames ====>" , usernames_tmp);
 
+                        // Delete creator from list of reviewers
                         for(var m=0; m<reviewers.length; m++){
                             if(data.user.username == reviewers[m]){
                                 reviewers.splice(m,1);
                             }
                         }
-                        console.log("reviewers ====> sl1 " , reviewers);
-
-                        for(var m=0; m<reviewers.length; m++){
-                            var contains = usernames.some(function(ele){
-                                return ele === reviewers[m];
-                            });
-
-                            if(contains == false){
-                                reviewers.splice(m,1);
+                        console.log("reviewers ====> sl1 " , reviewers );
+                        console.log("--------------------------------------" );
+                        var exist;
+                        for(var q=0; q<usernames_tmp.length; q++)
+                        {
+                            exist = false;
+                            for(var o=0; o<reviewers.length; o++)
+                            {
+                                if(reviewers[o] == usernames_tmp[q] )
+                                {
+                                    exist = true;
+                                    break;
+                                }
+                            }
+                            if(exist){
+                                usernames.push(usernames_tmp[q]);
                             }
                         }
-                        console.log("reviewers ====>" , reviewers);
+                        console.log("usernames..........." , usernames);
 
 
                         for(var i= 0; i < body_tmp.length; i++)
