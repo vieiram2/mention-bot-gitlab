@@ -340,8 +340,8 @@ function getBlame(url){
                                     }else{
                                         author =  author.substring(1, author.length);
                                     }
-                                    // authors.push({"name": $(this).text(), "username": author});
-                                    authors.push(author);
+                                    authors.push({"name": $(this).text(), "username": author});
+                                    // authors.push(author);
                                 }
                             });
                             console.log("authors => ",authors);
