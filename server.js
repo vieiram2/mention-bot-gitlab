@@ -119,7 +119,7 @@ app.post('/', function(req, res) {
                         reviewers = reviewers_tmp;
 
                         //test groupe ====> à supprimé
-                        //reviewers = []; usernames_tmp = [];
+                        reviewers = []; usernames_tmp = [];
 
 
                         // obtenir seulement 2 utilisateurs de la liste des réviseurs (aléatoir)
