@@ -224,40 +224,54 @@ app.post('/', function(req, res) {
                                                 reviewers =    reviewers_g;
                                             }
                                             console.log("has_group_member =====> ",has_group_member);
-                                            console.log("reviewers of  groupe =====> ",reviewers);
+                                            console.log("reviewers of  groupe... =====> ",reviewers);
+
+                                            request.post({
+                                                url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
+                                                body: JSON.stringify({
+                                                    note : messageGenerator(
+                                                        reviewers,
+                                                        data.user.username,
+                                                        buildMentionSentence,
+                                                        defaultMessageGenerator)
+                                                }),
+                                                headers : {
+                                                    'PRIVATE-TOKEN' : process.env.GITLAB_TOKEN,
+                                                    'Content-Type' : 'application/json'
+                                                }
+                                            },function(commentError, commentResponse, commentBody){
+                                                if (commentError || commentResponse.statusCode != 200) {
+                                                    console.log('Error commenting on merge request: ' + commentBody);
+                                                }
+                                            });
                                             return false ;
                                         });
                                     }
                                 });
-                                console.log("reviewers_g roupe2 =====> ",reviewers_g);
-                                if(has_group_member){
-                                    reviewers =    reviewers_g;
-                                }
-                                console.log("has_group_member2 =====> ",has_group_member);
-                                console.log("reviewers of  groupe2 =====> ",reviewers);
                                 return false ;
                                 // -----------------------------------------------------------
                             }
                         }
-                        console.log("reviewers_g ==> ", reviewers);
-                        // request.post({
-                        //     url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
-                        //     body: JSON.stringify({
-                        //         note : messageGenerator(
-                        //             reviewers,
-                        //             data.user.username,
-                        //             buildMentionSentence,
-                        //             defaultMessageGenerator)
-                        //     }),
-                        //     headers : {
-                        //         'PRIVATE-TOKEN' : process.env.GITLAB_TOKEN,
-                        //         'Content-Type' : 'application/json'
-                        //     }
-                        // },function(commentError, commentResponse, commentBody){
-                        //     if (commentError || commentResponse.statusCode != 200) {
-                        //         console.log('Error commenting on merge request: ' + commentBody);
-                        //     }
-                        // });
+                        if(reviewers.length>0){
+                            request.post({
+                                url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
+                                body: JSON.stringify({
+                                    note : messageGenerator(
+                                        reviewers,
+                                        data.user.username,
+                                        buildMentionSentence,
+                                        defaultMessageGenerator)
+                                }),
+                                headers : {
+                                    'PRIVATE-TOKEN' : process.env.GITLAB_TOKEN,
+                                    'Content-Type' : 'application/json'
+                                }
+                            },function(commentError, commentResponse, commentBody){
+                                if (commentError || commentResponse.statusCode != 200) {
+                                    console.log('Error commenting on merge request: ' + commentBody);
+                                }
+                            });
+                        }
                     });
                 });
             }
