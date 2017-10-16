@@ -452,6 +452,7 @@ function guessOwnersForPullRequest(
 
         var authors = [];
         var promises = [];
+        var unique_authors = [];
 
         files.forEach(function(file) {
             promises.push(new Promise(function(resolve, reject) {
@@ -462,11 +463,14 @@ function guessOwnersForPullRequest(
                 console.log((repoURL + '/blame/' + sha1 + '/' + file.old_path));
                 getBlame((repoURL + '/blame/' + sha1 + '/' + file.old_path))
                     .then(function(athrs){
-                        console.log("athrs in fct : ", athrs);
                         if(athrs != undefined){
                             authors = authors.concat(athrs);
+                                 unique_authors = authors.filter(function(elem, index, self) {
+                                return index == self.indexOf(elem);
+                            });
                         }
-                        console.log("authors in blam : ", authors);
+                        console.log("unique_authors : ", unique_authors);
+
                        //  var athrs_filtered =[];
                        // if(athrs != undefined){
                        //      athrs_filtered = athrs.filter(function(element){
