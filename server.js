@@ -119,7 +119,8 @@ app.post('/', function(req, res) {
 
                         console.log("reviewers_tmp ... ",reviewers_tmp);
                         reviewers = reviewers_tmp;
-
+                        var  reviewers_g = [] ;
+                        var has_group_member = false ;
                         console.log("before send ", reviewers);
 
                         // getting just 2 users from the list of reviewers
@@ -165,7 +166,8 @@ app.post('/', function(req, res) {
                                     reviewers.push(usernames_tmp[al1]);
                                 }
 
-                            }else{
+                            }
+                            else{
                                 // -----------------------------------------------------------
                                 var url_groups = process.env.GITLAB_URL + '/api/v3/groups?private_token='+ process.env.GITLAB_TOKEN ,
                                     list_groupsID = [];
@@ -179,6 +181,7 @@ app.post('/', function(req, res) {
                                         }
                                     }
                                     if(list_groupsID.length>0){
+                                        has_group_member = true;
                                         var IdGourpsAlt = list_groupsID[Math.floor(Math.random() * list_groupsID.length)] ,
                                             Members_groupURL = process.env.GITLAB_URL + '/api/v3/groups/' + IdGourpsAlt + '/members?private_token='+ process.env.GITLAB_TOKEN ;
                                         request(Members_groupURL, function (error, response, members) {
@@ -194,8 +197,7 @@ app.post('/', function(req, res) {
                                                 }
                                             }
 
-                                            var  reviewers_g = Members_group;
-
+                                            reviewers_g = Members_group;
 
                                             // getting just 2 users from the list of reviewers
                                             if(reviewers_g.length > 2){
@@ -216,35 +218,16 @@ app.post('/', function(req, res) {
                                                 reviewers_g.push(rand2);
 
                                             }
-
-                                            // console.log("reviewers groupe... ==> ", reviewers_g);
-                                            // reviewers_g = ['fznasri'];
-                                            request.post({
-                                                url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
-                                                body: JSON.stringify({
-                                                    note : messageGenerator(
-                                                        reviewers_g,
-                                                        buildMentionSentence,
-                                                        defaultMessageGenerator)
-                                                }),
-                                                headers : {
-                                                    'PRIVATE-TOKEN' : process.env.GITLAB_TOKEN,
-                                                    'Content-Type' : 'application/json'
-                                                }
-                                            },function(commentError, commentResponse, commentBody){
-                                                if (commentError || commentResponse.statusCode != 200) {
-                                                    console.log('Error commenting on merge request: ' + commentBody);
-                                                }
-                                            });
-
                                         });
                                     }
                                 });
-
-                                return ;
+                                if(has_group_member){
+                                    reviewers =    reviewers_g;
+                                }
                                 // -----------------------------------------------------------
                             }
                         }
+                        console.log("reviewers_g ==> ", reviewers);
                         request.post({
                             url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
                             body: JSON.stringify({
