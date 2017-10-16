@@ -119,6 +119,7 @@ app.post('/', function(req, res) {
 
                         reviewers = reviewers_tmp;
 
+                        console.log("before send ", reviewers);
 
                         // getting just 2 users from the list of reviewers
                         if(reviewers.length > 2){
@@ -163,84 +164,6 @@ app.post('/', function(req, res) {
                                     reviewers.push(usernames_tmp[al1]);
                                 }
 
-                            }else{
-                                // -----------------------------------------------------------
-                                    var url_groups = process.env.GITLAB_URL + '/api/v3/groups?private_token='+ process.env.GITLAB_TOKEN ,
-                                        list_groupsID = [];
-
-                                request(url_groups, function (error, response, groups) {
-                                    var groups_tmp =  JSON.parse(groups);
-                                    for(var i= 0; i < groups_tmp.length; i++)
-                                    {
-                                        if(groups_tmp[i].visibility_level > 0){
-                                            list_groupsID.push(groups_tmp[i].id);
-                                        }
-                                    }
-                                    if(list_groupsID.length>0){
-                                        var IdGourpsAlt = list_groupsID[Math.floor(Math.random() * list_groupsID.length)] ,
-                                            Members_groupURL = process.env.GITLAB_URL + '/api/v3/groups/' + IdGourpsAlt + '/members?private_token='+ process.env.GITLAB_TOKEN ;
-                                        request(Members_groupURL, function (error, response, members) {
-                                            var members_tmp =  JSON.parse(members),
-                                                Members_group =[];
-                                            console.log("members_tmp ==> ", members_tmp);
-
-
-                                            // Getting list of users in this groupe (usernames) and not blocked
-                                            for(var y=0; y<members_tmp.length; y++){
-                                                if(name != members_tmp[y].name && members_tmp[y].state != "blocked"){
-                                                    Members_group.push(members_tmp[y].username);
-                                                }
-                                            }
-
-                                            var  reviewers_g = Members_group;
-
-
-                                            // getting just 2 users from the list of reviewers
-                                            if(reviewers_g.length > 2){
-                                                var al1 = Math.floor(Math.random() * reviewers_g.length);
-                                                var al2 = reviewers_g.length-1;
-                                                if(al1 == al2 && al1 !=0){
-                                                    al2=0;
-                                                }
-                                                else{
-                                                    if(al1 == al2 && al1 ==0)
-                                                    {
-                                                        al2 = reviewers_g.length-1;
-                                                    }
-                                                }
-                                                var rand1 =  reviewers_g[al1], rand2 = reviewers_g[al2];
-                                                reviewers_g = [];
-                                                reviewers_g.push(rand1);
-                                                reviewers_g.push(rand2);
-
-                                            }
-
-                                            // console.log("reviewers groupe... ==> ", reviewers_g);
-                                            // reviewers_g = ['fznasri'];
-                                            request.post({
-                                                url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
-                                                body: JSON.stringify({
-                                                    note : messageGenerator(
-                                                        reviewers_g,
-                                                        buildMentionSentence,
-                                                        defaultMessageGenerator)
-                                                }),
-                                                headers : {
-                                                    'PRIVATE-TOKEN' : process.env.GITLAB_TOKEN,
-                                                    'Content-Type' : 'application/json'
-                                                }
-                                            },function(commentError, commentResponse, commentBody){
-                                                if (commentError || commentResponse.statusCode != 200) {
-                                                    console.log('Error commenting on merge request: ' + commentBody);
-                                                }
-                                            });
-
-                                        });
-                                    }
-                                });
-
-                                return ;
-                                // -----------------------------------------------------------
                             }
                         }
                         request.post({
