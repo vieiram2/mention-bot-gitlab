@@ -192,14 +192,14 @@ app.post('/', function(req, res) {
 
 
                                             // Getting list of users in this groupe (usernames) and not blocked
-                                            for(var y=0; y<members_tmp.length; y++){
-                                                if(name != members_tmp[y].name && members_tmp[y].state != "blocked"){
-                                                    Members_group.push(members_tmp[y].username);
+                                            for(var d=0; d<members_tmp.length; d++){
+                                                if(name != members_tmp[d].name && members_tmp[d].state != "blocked"){
+                                                    Members_group.push(members_tmp[d].username);
                                                 }
                                             }
 
                                             reviewers_g = Members_group;
-
+                                                        console.log("Members_group =====> ",Members_group);
                                             // getting just 2 users from the list of reviewers
                                             if(reviewers_g.length > 2){
                                                 var al1 = Math.floor(Math.random() * reviewers_g.length);
