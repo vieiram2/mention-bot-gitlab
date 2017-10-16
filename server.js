@@ -117,6 +117,7 @@ app.post('/', function(req, res) {
                             }
                         }
 
+                        console.log("reviewers_tmp ... ",reviewers_tmp);
                         reviewers = reviewers_tmp;
 
                         console.log("before send ", reviewers);

@@ -475,6 +475,8 @@ function guessOwnersForPullRequest(
                 getBlame((repoURL + '/blame/' + sha1 + '/' + file.old_path))
                     .then(function(athrs){
                         authors = authors.concat(athrs);
+                        console.log("athrs in fct : ", athrs);
+                        console.log("authors in blam : ", authors);
                        //  var athrs_filtered =[];
                        // if(athrs != undefined){
                        //      athrs_filtered = athrs.filter(function(element){
