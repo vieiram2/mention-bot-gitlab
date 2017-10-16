@@ -329,23 +329,11 @@ function getBlame(url){
                             var authors = [];
                             $('.commit-author-link').each(function () {
                                 var author = $(this).text();
-                                // if(authors.indexOf(author) == -1){
-                                //     if (author.indexOf("mailto") >= 0){
-                                //         var res_tmp = author.substring(7, author.length) ,
-                                //             index = res_tmp.indexOf("@") ,
-                                //             author = res_tmp.substring(0, index);
-                                //         if(author == ''){
-                                //             author = $(this).text();
-                                //         }
-                                //     }else{
-                                //         author =  author.substring(1, author.length);
-                                //     }
-                                //     authors.push(author);
-                                // }
-
-                                authors.push(author);
+                                if(authors.indexOf(author) == -1){
+                                    authors.push(author);
+                                }
                             });
-
+                            console.log("evaluate ", authors );
                             return authors;
                         }, function (err,result) {
                             resolve(result);
@@ -474,8 +462,10 @@ function guessOwnersForPullRequest(
                 console.log((repoURL + '/blame/' + sha1 + '/' + file.old_path));
                 getBlame((repoURL + '/blame/' + sha1 + '/' + file.old_path))
                     .then(function(athrs){
-                        authors = authors.concat(athrs);
                         console.log("athrs in fct : ", athrs);
+                        if(athrs != undefined){
+                            authors = authors.concat(athrs);
+                        }
                         console.log("authors in blam : ", authors);
                        //  var athrs_filtered =[];
                        // if(athrs != undefined){
