@@ -123,7 +123,10 @@ app.post('/', function(req, res) {
                         var has_group_member = false ;
                         console.log("before send ", reviewers);
                             //test groupe ====> à supprimé
-                        reviewers = []; usernames_tmp = [];
+                        //reviewers = []; usernames_tmp = [];
+
+
+
                         // getting just 2 users from the list of reviewers
                         if(reviewers.length > 2){
                             var al1 = Math.floor(Math.random() * reviewers.length);
