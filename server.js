@@ -222,9 +222,12 @@ app.post('/', function(req, res) {
                                         });
                                     }
                                 });
+                                console.log("reviewers_g roupe =====> ",reviewers_g);
                                 if(has_group_member){
                                     reviewers =    reviewers_g;
                                 }
+                                console.log("has_group_member =====> ",has_group_member);
+                                console.log("reviewers of  groupe =====> ",reviewers);
                                 // -----------------------------------------------------------
                             }
                         }
