@@ -333,7 +333,6 @@ function getBlame(url){
                                     authors.push(author);
                                 }
                             });
-                            console.log("evaluate ", authors );
                             return authors;
                         }, function (err,result) {
                             resolve(result);
@@ -347,7 +346,6 @@ function getBlame(url){
                         return;
                     }
                     if (typeof steps[testindex] == "function") {
-                        console.log("step " + (testindex + 1) );
                         steps[testindex]();
                         testindex++;
                     } else {
@@ -469,16 +467,6 @@ function guessOwnersForPullRequest(
                                 return index == self.indexOf(elem);
                             });
                         }
-                        console.log("unique_authors : ", unique_authors);
-
-                       //  var athrs_filtered =[];
-                       // if(athrs != undefined){
-                       //      athrs_filtered = athrs.filter(function(element){
-                       //         return element !== username ;
-                       //     });
-                       // }
-                       //  authors = authors.concat(athrs_filtered);
-                       // console.log("authors -----> ",authors);
                         resolve();
                     });
             }));

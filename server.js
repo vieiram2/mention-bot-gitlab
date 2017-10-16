@@ -93,8 +93,6 @@ app.post('/', function(req, res) {
                     data.user.username, // 'username of creator'
                     {}
                 ).then(function(reviewers){
-                    console.log("rev before " , reviewers);
-                    /***********************************************************/
                     var url_users = process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/users?private_token='+ process.env.GITLAB_TOKEN ;
                     request(url_users, function (error, response, body) {
                         var body_tmp =  JSON.parse(body);
@@ -116,12 +114,11 @@ app.post('/', function(req, res) {
                                 }
                             }
                         }
-
-                        console.log("reviewers_tmp ... ",reviewers_tmp);
                         reviewers = reviewers_tmp;
                         var  reviewers_g = [] ;
                         var has_group_member = false ;
-                        console.log("before send ", reviewers);
+
+
                             //test groupe ====> à supprimé
                         //reviewers = []; usernames_tmp = [];
 
@@ -192,8 +189,6 @@ app.post('/', function(req, res) {
                                             request(Members_groupURL, function (error, response, members) {
                                                 var members_tmp =  JSON.parse(members),
                                                     Members_group =[];
-                                                console.log("members_tmp ==> ", members_tmp);
-
 
                                                 // Getting list of users in this groupe (usernames) and not blocked
                                                 for(var d=0; d<members_tmp.length; d++){
@@ -203,7 +198,7 @@ app.post('/', function(req, res) {
                                                 }
 
                                                 reviewers_g = Members_group;
-                                                console.log("Members_group =====> ",Members_group);
+
                                                 // getting just 2 users from the list of reviewers
                                                 if(reviewers_g.length > 2){
                                                     var al1 = Math.floor(Math.random() * reviewers_g.length);
@@ -223,12 +218,10 @@ app.post('/', function(req, res) {
                                                     reviewers_g.push(rand2);
 
                                                 }
-                                                console.log("reviewers_g roupe =====> ",reviewers_g);
+
                                                 if(has_group_member){
                                                     reviewers =    reviewers_g;
                                                 }
-                                                console.log("has_group_member =====> ",has_group_member);
-                                                console.log("reviewers of  groupe... =====> ",reviewers);
 
                                                 request.post({
                                                     url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
@@ -253,7 +246,6 @@ app.post('/', function(req, res) {
                                         }
                                     });
                                     return false ;
-                                    // -----------------------------------------------------------
                                 }
                             }
                         }
