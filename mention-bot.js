@@ -474,14 +474,15 @@ function guessOwnersForPullRequest(
                 console.log((repoURL + '/blame/' + sha1 + '/' + file.old_path));
                 getBlame((repoURL + '/blame/' + sha1 + '/' + file.old_path))
                     .then(function(athrs){
-                        var athrs_filtered =[];
-                       if(athrs != undefined){
-                            athrs_filtered = athrs.filter(function(element){
-                               return element !== username ;
-                           });
-                       }
-                        authors = authors.concat(athrs_filtered);
-                       console.log("authors -----> ",authors);
+                        authors = authors.concat(athrs);
+                       //  var athrs_filtered =[];
+                       // if(athrs != undefined){
+                       //      athrs_filtered = athrs.filter(function(element){
+                       //         return element !== username ;
+                       //     });
+                       // }
+                       //  authors = authors.concat(athrs_filtered);
+                       // console.log("authors -----> ",authors);
                         resolve();
                     });
             }));
