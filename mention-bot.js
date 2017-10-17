@@ -455,12 +455,11 @@ function guessOwnersForPullRequest(
         files.forEach(function(file) {
             promises.push(new Promise(function(resolve, reject) {
                 // console.log("file.old_path ==> ", file.old_path);
-                //                 https://gitlab.ayaline.com/fznasri/ela-sit-ic/blame/e905c74b6b089bef8414650bc92520fd2bc99483/src/AppBundle/Resources/public/testaddfile.php
-                 var url_test = "https://gitlab.ayaline.com/tourisme/pays-de-valois/blame/dev/src/Ayaline/AppBundle/Resources/views/full/accueil.html.twig";
+                // var url_test = "https://gitlab.ayaline.com/managerexpo/dev/blame/mantis_591/app/Resources/KnpMenuBundle/views/Menu/knp_menu.html.twig";
                 // console.log("url_test ==> " , url_test);
                 // getBlame((url_test))
                 console.log((repoURL + '/blame/' + sha1 + '/' + file.old_path));
-                getBlame((url_test))
+                getBlame((repoURL + '/blame/' + sha1 + '/' + file.old_path))
                     .then(function(athrs){
                         if(athrs != undefined){
                             authors = authors.concat(athrs);

@@ -219,27 +219,26 @@ app.post('/', function(req, res) {
                                                 }
 
                                                 reviewers = Members_group;
-console.log("reviewers1  ", reviewers);
-                                               // envoyer la requête pour écrire le commentaire sur git
 
-                                               //  request.post({
-                                               //      url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
-                                               //      body: JSON.stringify({
-                                               //          note : messageGenerator(
-                                               //              reviewers,
-                                               //              data.user.username,
-                                               //              buildMentionSentence,
-                                               //              defaultMessageGenerator)
-                                               //      }),
-                                               //      headers : {
-                                               //          'PRIVATE-TOKEN' : process.env.GITLAB_TOKEN,
-                                               //          'Content-Type' : 'application/json'
-                                               //      }
-                                               //  },function(commentError, commentResponse, commentBody){
-                                               //      if (commentError || commentResponse.statusCode != 200) {
-                                               //          console.log('Error commenting on merge request: ' + commentBody);
-                                               //      }
-                                               //  });
+                                               // envoyer la requête pour écrire le commentaire sur git
+                                                request.post({
+                                                    url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
+                                                    body: JSON.stringify({
+                                                        note : messageGenerator(
+                                                            reviewers,
+                                                            data.user.username,
+                                                            buildMentionSentence,
+                                                            defaultMessageGenerator)
+                                                    }),
+                                                    headers : {
+                                                        'PRIVATE-TOKEN' : process.env.GITLAB_TOKEN,
+                                                        'Content-Type' : 'application/json'
+                                                    }
+                                                },function(commentError, commentResponse, commentBody){
+                                                    if (commentError || commentResponse.statusCode != 200) {
+                                                        console.log('Error commenting on merge request: ' + commentBody);
+                                                    }
+                                                });
                                                 return false ;
                                             });
                                         }
@@ -249,27 +248,25 @@ console.log("reviewers1  ", reviewers);
                             }
                         }
                         if(reviewers.length>0){
-                            console.log("reviewers2  ", reviewers);
                             // envoyer la requête pour écrire le commentaire sur git
-
-                            // request.post({
-                            //     url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
-                            //     body: JSON.stringify({
-                            //         note : messageGenerator(
-                            //             reviewers,
-                            //             data.user.username,
-                            //             buildMentionSentence,
-                            //             defaultMessageGenerator)
-                            //     }),
-                            //     headers : {
-                            //         'PRIVATE-TOKEN' : process.env.GITLAB_TOKEN,
-                            //         'Content-Type' : 'application/json'
-                            //     }
-                            // },function(commentError, commentResponse, commentBody){
-                            //     if (commentError || commentResponse.statusCode != 200) {
-                            //         console.log('Error commenting on merge request: ' + commentBody);
-                            //     }
-                            // });
+                            request.post({
+                                url : process.env.GITLAB_URL + '/api/v3/projects/' + data.object_attributes.target_project_id + '/merge_requests/' + data.object_attributes.id + '/comments',
+                                body: JSON.stringify({
+                                    note : messageGenerator(
+                                        reviewers,
+                                        data.user.username,
+                                        buildMentionSentence,
+                                        defaultMessageGenerator)
+                                }),
+                                headers : {
+                                    'PRIVATE-TOKEN' : process.env.GITLAB_TOKEN,
+                                    'Content-Type' : 'application/json'
+                                }
+                            },function(commentError, commentResponse, commentBody){
+                                if (commentError || commentResponse.statusCode != 200) {
+                                    console.log('Error commenting on merge request: ' + commentBody);
+                                }
+                            });
                         }
                     });
                 });
