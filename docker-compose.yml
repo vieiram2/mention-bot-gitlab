@@ -1,0 +1,12 @@
+version: '2'
+
+services:
+  app:
+    image: vieiram2/mention-bot-gitlab:latest
+    build:
+      context: .
+    environment:
+      - GITLAB_TOKEN=
+      - GITLAB_URL=
+      - GITLAB_USER=
+      - GITLAB_PASSWORD=
